@@ -1,0 +1,30 @@
+{
+  "id": "ashen_ramparts",
+  "version": 2,
+  "class": "outdoor",
+  "shape": "C",
+  "grid": 48,
+  "cell_m": 4,
+  "tileset": "ramparts_v2",
+  "landmarks": ["ash_beacon", "broken_trebuchet", "hanging_gate"],
+  "spawn": {
+    "base_density": 0.014,
+    "elite_rate": 0.15
+  },
+  "nodes": [
+    {"id": "gate",         "role": "entrance",   "anchor": "shape.start"},
+    {"id": "rampart_walk", "role": "side",       "anchor": "shape.bend"},
+    {"id": "muster",       "role": "checkpoint", "anchor": "shape.centre"},
+    {"id": "cistern",      "role": "mechanic",   "anchor": "shape.pocket", "optional": true, "set_piece": "mechanic_ritual"},
+    {"id": "warlord",      "role": "boss",       "anchor": "shape.bend2",  "set_piece": "ramparts_warlord_v1"},
+    {"id": "sally_port",   "role": "exit",       "anchor": "shape.end",    "set_piece": "exit_brazier"}
+  ],
+  "edges": [
+    {"a": "gate",         "b": "rampart_walk"},
+    {"a": "rampart_walk", "b": "muster"},
+    {"a": "muster",       "b": "warlord"},
+    {"a": "warlord",      "b": "sally_port"},
+    {"a": "muster",       "b": "cistern",  "optional": true},
+    {"a": "gate",         "b": "muster",   "optional": true}
+  ]
+}

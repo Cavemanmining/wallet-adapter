@@ -1,0 +1,27 @@
+{
+  "id": "crypt",
+  "version": 4,
+  "class": "dungeon",
+  "shape": "U",
+  "grid": 48,
+  "cell_m": 4,
+  "tileset": "crypt_v5",
+  "landmarks": ["bell_tower_fallen", "chain_gantry"],
+  "spawn": {
+    "base_density": 0.018,
+    "elite_rate": 0.12
+  },
+  "nodes": [
+    {"id": "in",   "role": "entrance", "anchor": "shape.start"},
+    {"id": "b1",   "role": "side",     "anchor": "shape.bend"},
+    {"id": "mech", "role": "mechanic", "anchor": "shape.pocket", "optional": true, "set_piece": "mechanic_ritual"},
+    {"id": "boss", "role": "boss",     "anchor": "shape.end",    "set_piece": "crypt_boss_v2"},
+    {"id": "out",  "role": "exit",     "anchor": "shape.end",    "set_piece": "exit_brazier"}
+  ],
+  "edges": [
+    {"a": "in",   "b": "b1"},
+    {"a": "b1",   "b": "boss"},
+    {"a": "b1",   "b": "mech", "optional": true},
+    {"a": "boss", "b": "out"}
+  ]
+}

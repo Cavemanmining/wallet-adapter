@@ -1,0 +1,1871 @@
+{
+ "id": "greybox",
+ "version": 1,
+ "cell_m": 4.0,
+ "filler_tile_id": 0,
+ "hero_period": 20,
+ "note": "Greybox tile database for spec stage 4. The dungeon family lists all 16 OPEN/WALL side combinations explicitly. The terrain family carries one tile per rotation/flip orbit of the full five-signature alphabet, so every one of the 625 side combinations is reachable by transform. Every OPEN side exposes all three connection slots, which is why a request for any slot subset can always be met.",
+ "tiles": [
+  {
+   "id": 0,
+   "name": "filler_rock",
+   "class": "both",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "WALL"
+   ],
+   "walkable": false,
+   "weight": 0,
+   "mesh": "greybox/filler/rock",
+   "navmesh": "exclude",
+   "collision_margin_m": 1.0,
+   "note": "Stage 4 filler for cells routing never touched."
+  },
+  {
+   "id": 1,
+   "name": "dungeon_solid",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/solid",
+   "note": "sealed floor, walls on every side"
+  },
+  {
+   "id": 2,
+   "name": "dungeon_end_n",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/end_n",
+   "note": "dead end opening north"
+  },
+  {
+   "id": 3,
+   "name": "dungeon_end_e",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "OPEN",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/end_e",
+   "note": "dead end opening east"
+  },
+  {
+   "id": 4,
+   "name": "dungeon_corner_ne",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/corner_ne",
+   "note": "corner joining north and east"
+  },
+  {
+   "id": 5,
+   "name": "dungeon_end_s",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "WALL",
+    "OPEN",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/end_s",
+   "note": "dead end opening south"
+  },
+  {
+   "id": 6,
+   "name": "dungeon_hall_ns",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "OPEN",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/hall_ns",
+   "note": "straight corridor north-south"
+  },
+  {
+   "id": 7,
+   "name": "dungeon_corner_es",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "OPEN",
+    "OPEN",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/corner_es",
+   "note": "corner joining east and south"
+  },
+  {
+   "id": 8,
+   "name": "dungeon_tee_nes",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "WALL"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/tee_nes",
+   "note": "tee open north, east and south"
+  },
+  {
+   "id": 9,
+   "name": "dungeon_end_w",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/end_w",
+   "note": "dead end opening west"
+  },
+  {
+   "id": 10,
+   "name": "dungeon_corner_nw",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WALL",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/corner_nw",
+   "note": "corner joining north and west"
+  },
+  {
+   "id": 11,
+   "name": "dungeon_hall_ew",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "OPEN",
+    "WALL",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/hall_ew",
+   "note": "straight corridor east-west"
+  },
+  {
+   "id": 12,
+   "name": "dungeon_tee_wne",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "WALL",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/tee_wne",
+   "note": "tee open west, north and east"
+  },
+  {
+   "id": 13,
+   "name": "dungeon_corner_sw",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "WALL",
+    "OPEN",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/corner_sw",
+   "note": "corner joining south and west"
+  },
+  {
+   "id": 14,
+   "name": "dungeon_tee_swn",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "OPEN",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/tee_swn",
+   "note": "tee open south, west and north"
+  },
+  {
+   "id": 15,
+   "name": "dungeon_tee_esw",
+   "class": "dungeon",
+   "sides": [
+    "WALL",
+    "OPEN",
+    "OPEN",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/tee_esw",
+   "note": "tee open east, south and west"
+  },
+  {
+   "id": 16,
+   "name": "dungeon_cross",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "OPEN"
+   ],
+   "weight": 12,
+   "mesh": "greybox/dungeon/cross",
+   "note": "four-way crossroads"
+  },
+  {
+   "id": 32,
+   "name": "terrain_OOOO",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "OPEN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oooo"
+  },
+  {
+   "id": 33,
+   "name": "terrain_OOOX",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooox"
+  },
+  {
+   "id": 34,
+   "name": "terrain_OOOU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooou"
+  },
+  {
+   "id": 35,
+   "name": "terrain_OOOD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oood"
+  },
+  {
+   "id": 36,
+   "name": "terrain_OOOA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oooa"
+  },
+  {
+   "id": 37,
+   "name": "terrain_OOXX",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooxx"
+  },
+  {
+   "id": 38,
+   "name": "terrain_OOXU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "WALL",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooxu"
+  },
+  {
+   "id": 39,
+   "name": "terrain_OOXD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "WALL",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooxd"
+  },
+  {
+   "id": 40,
+   "name": "terrain_OOXA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooxa"
+  },
+  {
+   "id": 41,
+   "name": "terrain_OOUU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oouu"
+  },
+  {
+   "id": 42,
+   "name": "terrain_OOUD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooud"
+  },
+  {
+   "id": 43,
+   "name": "terrain_OOUA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooua"
+  },
+  {
+   "id": 44,
+   "name": "terrain_OODD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oodd"
+  },
+  {
+   "id": 45,
+   "name": "terrain_OODA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooda"
+  },
+  {
+   "id": 46,
+   "name": "terrain_OOAA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ooaa"
+  },
+  {
+   "id": 47,
+   "name": "terrain_OXOX",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "OPEN",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxox"
+  },
+  {
+   "id": 48,
+   "name": "terrain_OXOU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "OPEN",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxou"
+  },
+  {
+   "id": 49,
+   "name": "terrain_OXOD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "OPEN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxod"
+  },
+  {
+   "id": 50,
+   "name": "terrain_OXOA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "OPEN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxoa"
+  },
+  {
+   "id": 51,
+   "name": "terrain_OXXX",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxxx"
+  },
+  {
+   "id": 52,
+   "name": "terrain_OXXU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WALL",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxxu"
+  },
+  {
+   "id": 53,
+   "name": "terrain_OXXD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WALL",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxxd"
+  },
+  {
+   "id": 54,
+   "name": "terrain_OXXA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxxa"
+  },
+  {
+   "id": 55,
+   "name": "terrain_OXUX",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_UP",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxux"
+  },
+  {
+   "id": 56,
+   "name": "terrain_OXUU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxuu"
+  },
+  {
+   "id": 57,
+   "name": "terrain_OXUD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxud"
+  },
+  {
+   "id": 58,
+   "name": "terrain_OXUA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxua"
+  },
+  {
+   "id": 59,
+   "name": "terrain_OXDX",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_DOWN",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxdx"
+  },
+  {
+   "id": 60,
+   "name": "terrain_OXDU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_DOWN",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxdu"
+  },
+  {
+   "id": 61,
+   "name": "terrain_OXDD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxdd"
+  },
+  {
+   "id": 62,
+   "name": "terrain_OXDA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxda"
+  },
+  {
+   "id": 63,
+   "name": "terrain_OXAX",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WATER",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxax"
+  },
+  {
+   "id": 64,
+   "name": "terrain_OXAU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WATER",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxau"
+  },
+  {
+   "id": 65,
+   "name": "terrain_OXAD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WATER",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxad"
+  },
+  {
+   "id": 66,
+   "name": "terrain_OXAA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oxaa"
+  },
+  {
+   "id": 67,
+   "name": "terrain_OUOU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "OPEN",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouou"
+  },
+  {
+   "id": 68,
+   "name": "terrain_OUOD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "OPEN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouod"
+  },
+  {
+   "id": 69,
+   "name": "terrain_OUOA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "OPEN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouoa"
+  },
+  {
+   "id": 70,
+   "name": "terrain_OUXU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "WALL",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouxu"
+  },
+  {
+   "id": 71,
+   "name": "terrain_OUXD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "WALL",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouxd"
+  },
+  {
+   "id": 72,
+   "name": "terrain_OUXA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouxa"
+  },
+  {
+   "id": 73,
+   "name": "terrain_OUUU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouuu"
+  },
+  {
+   "id": 74,
+   "name": "terrain_OUUD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouud"
+  },
+  {
+   "id": 75,
+   "name": "terrain_OUUA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouua"
+  },
+  {
+   "id": 76,
+   "name": "terrain_OUDU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oudu"
+  },
+  {
+   "id": 77,
+   "name": "terrain_OUDD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oudd"
+  },
+  {
+   "id": 78,
+   "name": "terrain_OUDA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouda"
+  },
+  {
+   "id": 79,
+   "name": "terrain_OUAU",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "WATER",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouau"
+  },
+  {
+   "id": 80,
+   "name": "terrain_OUAD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "WATER",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouad"
+  },
+  {
+   "id": 81,
+   "name": "terrain_OUAA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_UP",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ouaa"
+  },
+  {
+   "id": 82,
+   "name": "terrain_ODOD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "OPEN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odod"
+  },
+  {
+   "id": 83,
+   "name": "terrain_ODOA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "OPEN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odoa"
+  },
+  {
+   "id": 84,
+   "name": "terrain_ODXD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "WALL",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odxd"
+  },
+  {
+   "id": 85,
+   "name": "terrain_ODXA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odxa"
+  },
+  {
+   "id": 86,
+   "name": "terrain_ODUD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odud"
+  },
+  {
+   "id": 87,
+   "name": "terrain_ODUA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odua"
+  },
+  {
+   "id": 88,
+   "name": "terrain_ODDD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oddd"
+  },
+  {
+   "id": 89,
+   "name": "terrain_ODDA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odda"
+  },
+  {
+   "id": 90,
+   "name": "terrain_ODAD",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "WATER",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odad"
+  },
+  {
+   "id": 91,
+   "name": "terrain_ODAA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "CLIFF_DOWN",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/odaa"
+  },
+  {
+   "id": 92,
+   "name": "terrain_OAOA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WATER",
+    "OPEN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oaoa"
+  },
+  {
+   "id": 93,
+   "name": "terrain_OAXA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WATER",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oaxa"
+  },
+  {
+   "id": 94,
+   "name": "terrain_OAUA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WATER",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oaua"
+  },
+  {
+   "id": 95,
+   "name": "terrain_OADA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WATER",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oada"
+  },
+  {
+   "id": 96,
+   "name": "terrain_OAAA",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WATER",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/oaaa"
+  },
+  {
+   "id": 97,
+   "name": "terrain_XXXX",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxxx"
+  },
+  {
+   "id": 98,
+   "name": "terrain_XXXU",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxxu"
+  },
+  {
+   "id": 99,
+   "name": "terrain_XXXD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxxd"
+  },
+  {
+   "id": 100,
+   "name": "terrain_XXXA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxxa"
+  },
+  {
+   "id": 101,
+   "name": "terrain_XXUU",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxuu"
+  },
+  {
+   "id": 102,
+   "name": "terrain_XXUD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxud"
+  },
+  {
+   "id": 103,
+   "name": "terrain_XXUA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxua"
+  },
+  {
+   "id": 104,
+   "name": "terrain_XXDD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxdd"
+  },
+  {
+   "id": 105,
+   "name": "terrain_XXDA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxda"
+  },
+  {
+   "id": 106,
+   "name": "terrain_XXAA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WALL",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xxaa"
+  },
+  {
+   "id": 107,
+   "name": "terrain_XUXU",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "WALL",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuxu"
+  },
+  {
+   "id": 108,
+   "name": "terrain_XUXD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "WALL",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuxd"
+  },
+  {
+   "id": 109,
+   "name": "terrain_XUXA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuxa"
+  },
+  {
+   "id": 110,
+   "name": "terrain_XUUU",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuuu"
+  },
+  {
+   "id": 111,
+   "name": "terrain_XUUD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuud"
+  },
+  {
+   "id": 112,
+   "name": "terrain_XUUA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuua"
+  },
+  {
+   "id": 113,
+   "name": "terrain_XUDU",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xudu"
+  },
+  {
+   "id": 114,
+   "name": "terrain_XUDD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xudd"
+  },
+  {
+   "id": 115,
+   "name": "terrain_XUDA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuda"
+  },
+  {
+   "id": 116,
+   "name": "terrain_XUAU",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "WATER",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuau"
+  },
+  {
+   "id": 117,
+   "name": "terrain_XUAD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "WATER",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuad"
+  },
+  {
+   "id": 118,
+   "name": "terrain_XUAA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_UP",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xuaa"
+  },
+  {
+   "id": 119,
+   "name": "terrain_XDXD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "WALL",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xdxd"
+  },
+  {
+   "id": 120,
+   "name": "terrain_XDXA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xdxa"
+  },
+  {
+   "id": 121,
+   "name": "terrain_XDUD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xdud"
+  },
+  {
+   "id": 122,
+   "name": "terrain_XDUA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xdua"
+  },
+  {
+   "id": 123,
+   "name": "terrain_XDDD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xddd"
+  },
+  {
+   "id": 124,
+   "name": "terrain_XDDA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xdda"
+  },
+  {
+   "id": 125,
+   "name": "terrain_XDAD",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "WATER",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xdad"
+  },
+  {
+   "id": 126,
+   "name": "terrain_XDAA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "CLIFF_DOWN",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xdaa"
+  },
+  {
+   "id": 127,
+   "name": "terrain_XAXA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WATER",
+    "WALL",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xaxa"
+  },
+  {
+   "id": 128,
+   "name": "terrain_XAUA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WATER",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xaua"
+  },
+  {
+   "id": 129,
+   "name": "terrain_XADA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WATER",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xada"
+  },
+  {
+   "id": 130,
+   "name": "terrain_XAAA",
+   "class": "outdoor",
+   "sides": [
+    "WALL",
+    "WATER",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/xaaa"
+  },
+  {
+   "id": 131,
+   "name": "terrain_UUUU",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_UP"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uuuu"
+  },
+  {
+   "id": 132,
+   "name": "terrain_UUUD",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uuud"
+  },
+  {
+   "id": 133,
+   "name": "terrain_UUUA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uuua"
+  },
+  {
+   "id": 134,
+   "name": "terrain_UUDD",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uudd"
+  },
+  {
+   "id": 135,
+   "name": "terrain_UUDA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uuda"
+  },
+  {
+   "id": 136,
+   "name": "terrain_UUAA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_UP",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uuaa"
+  },
+  {
+   "id": 137,
+   "name": "terrain_UDUD",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_UP",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/udud"
+  },
+  {
+   "id": 138,
+   "name": "terrain_UDUA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/udua"
+  },
+  {
+   "id": 139,
+   "name": "terrain_UDDD",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uddd"
+  },
+  {
+   "id": 140,
+   "name": "terrain_UDDA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/udda"
+  },
+  {
+   "id": 141,
+   "name": "terrain_UDAD",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "WATER",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/udad"
+  },
+  {
+   "id": 142,
+   "name": "terrain_UDAA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "CLIFF_DOWN",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/udaa"
+  },
+  {
+   "id": 143,
+   "name": "terrain_UAUA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "WATER",
+    "CLIFF_UP",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uaua"
+  },
+  {
+   "id": 144,
+   "name": "terrain_UADA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "WATER",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uada"
+  },
+  {
+   "id": 145,
+   "name": "terrain_UAAA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_UP",
+    "WATER",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/uaaa"
+  },
+  {
+   "id": 146,
+   "name": "terrain_DDDD",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/dddd"
+  },
+  {
+   "id": 147,
+   "name": "terrain_DDDA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ddda"
+  },
+  {
+   "id": 148,
+   "name": "terrain_DDAA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_DOWN",
+    "CLIFF_DOWN",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/ddaa"
+  },
+  {
+   "id": 149,
+   "name": "terrain_DADA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_DOWN",
+    "WATER",
+    "CLIFF_DOWN",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/dada"
+  },
+  {
+   "id": 150,
+   "name": "terrain_DAAA",
+   "class": "outdoor",
+   "sides": [
+    "CLIFF_DOWN",
+    "WATER",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/daaa"
+  },
+  {
+   "id": 151,
+   "name": "terrain_AAAA",
+   "class": "outdoor",
+   "sides": [
+    "WATER",
+    "WATER",
+    "WATER",
+    "WATER"
+   ],
+   "weight": 2,
+   "mesh": "greybox/terrain/aaaa"
+  },
+  {
+   "id": 200,
+   "name": "dungeon_cross_hero",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "OPEN"
+   ],
+   "weight": 3,
+   "hero": true,
+   "mesh": "greybox/dungeon/cross_statue",
+   "note": "crossroads with a broken statue at its centre"
+  },
+  {
+   "id": 201,
+   "name": "dungeon_end_n_hero",
+   "class": "dungeon",
+   "sides": [
+    "OPEN",
+    "WALL",
+    "WALL",
+    "WALL"
+   ],
+   "weight": 3,
+   "hero": true,
+   "mesh": "greybox/dungeon/end_shrine",
+   "note": "dead end holding a wall shrine"
+  },
+  {
+   "id": 202,
+   "name": "terrain_OOOO_hero",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "OPEN",
+    "OPEN",
+    "OPEN"
+   ],
+   "weight": 3,
+   "hero": true,
+   "mesh": "greybox/terrain/monolith",
+   "note": "open ground around a leaning monolith"
+  },
+  {
+   "id": 203,
+   "name": "terrain_OAAO_hero",
+   "class": "outdoor",
+   "sides": [
+    "OPEN",
+    "WATER",
+    "WATER",
+    "OPEN"
+   ],
+   "weight": 3,
+   "hero": true,
+   "mesh": "greybox/terrain/sunken_idol",
+   "note": "shoreline with a half-drowned idol"
+  }
+ ]
+}

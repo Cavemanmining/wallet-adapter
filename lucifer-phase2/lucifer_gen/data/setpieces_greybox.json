@@ -1,0 +1,77 @@
+{
+ "id": "greybox_setpieces",
+ "version": 1,
+ "cell_m": 4.0,
+ "note": "Greybox set pieces for spec stage 5. Each piece is a fixed interior drawn as a grid of cell kinds, so it is identical in every instance; only its placement (origin and rotation) moves. Glyphs: '.' floor (CellKind.SET_PIECE), '#' solid (CellKind.EMPTY, which stage 4 fills and seals), 'D' the entrance socket, which is floor and must sit on the perimeter. Solid cells are never on the perimeter: a routed corridor that touches the footprint's edge must still meet floor, otherwise stamping could sever the map. Rows run north to south and columns west to east, and every piece is square so a quarter turn keeps its footprint. Socket offsets are read in the side's clockwise direction (north west-to-east, east north-to-south, south east-to-west, west south-to-north), the same convention as connection slots in contracts.py and doorway sockets in the room library.",
+ "pieces": [
+  {
+   "id": "crypt_boss_v2",
+   "role": "boss",
+   "w": 7,
+   "h": 7,
+   "socket": [0, 3],
+   "interior": [
+    "...D...",
+    ".......",
+    "..#.#..",
+    ".......",
+    "..#.#..",
+    ".......",
+    "......."
+   ],
+   "markers": [],
+   "note": "Boss arena: a 7x7 hall entered from the middle of one side, with four pillars set in from the walls so the fight has cover. The last 30 m of corridor before it is re-marked CellKind.APPROACH by stage 5."
+  },
+  {
+   "id": "ramparts_warlord_v1",
+   "role": "boss",
+   "w": 7,
+   "h": 7,
+   "socket": [0, 3],
+   "interior": [
+    "...D...",
+    ".......",
+    ".#...#.",
+    ".......",
+    ".#...#.",
+    ".......",
+    "......."
+   ],
+   "markers": [],
+   "note": "Outdoor boss arena for the ashen_ramparts template: same 7x7 footprint as the crypt arena, with four rubble blocks pushed wider apart so the open ground reads as a courtyard rather than a hall."
+  },
+  {
+   "id": "exit_brazier",
+   "role": "exit",
+   "w": 3,
+   "h": 3,
+   "socket": [0, 1],
+   "interior": [
+    ".D.",
+    "...",
+    "..."
+   ],
+   "markers": [
+    {"kind": "exit", "at": [1, 1]},
+    {"kind": "brazier", "at": [0, 2]},
+    {"kind": "landmark", "at": [2, 2]}
+   ],
+   "note": "Exit checkpoint: a 3x3 platform with the way out at its centre, the checkpoint brazier in one far corner and the landmark in the other, so both tells are visible from the doorway. Spec section 02 asks for the exit to sit within 15 m of both; a diagonal step is 5.7 m at 4 m per cell, so the tell holds by construction and is re-measured anyway."
+  },
+  {
+   "id": "mechanic_ritual",
+   "role": "mechanic",
+   "w": 5,
+   "h": 5,
+   "socket": [0, 2],
+   "interior": [
+    "..D..",
+    ".....",
+    "..#..",
+    ".....",
+    "....."
+   ],
+   "note": "Mechanic room: a 5x5 chamber around a solid central plinth, which the ritual mechanic is staged on. Walkable ground rings the plinth so the room never becomes a dead end."
+  }
+ ]
+}
