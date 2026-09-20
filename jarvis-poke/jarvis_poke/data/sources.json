@@ -1,0 +1,331 @@
+{
+  "version": 1,
+  "note": "Placeholder sources only. Every retailer here is fictional and every url is under example.com; this package ships no real retailer's page structure and no extraction rules of any kind -- parsing is an injected Parser and fetching an injected Fetcher (jarvis_poke/contracts.py). min_interval_s is a per-host floor in seconds; FetchPolicy refuses anything under 30s and this file stays between 300 and 900.",
+  "sources": [
+    {
+      "id": "examplemart",
+      "name": "ExampleMart (placeholder)",
+      "site": "https://examplemart.example.com/",
+      "note": "Placeholder retailer. Carries the whole catalog, polls fastest of the four.",
+      "policy": {
+        "min_interval_s": 300.0,
+        "robots_allows": true,
+        "max_errors_before_pause": 5,
+        "pause_s": 3600.0,
+        "user_agent": "JarvisPokeWatch/1 (+personal use; contact in app settings)"
+      },
+      "skus": [
+        {
+          "product_id": "sv035-151-booster-bundle",
+          "sku": "EM-SV035-151-BOOSTER-BUNDLE",
+          "url": "https://examplemart.example.com/p/sv035-151-booster-bundle"
+        },
+        {
+          "product_id": "sv035-151-ultra-premium-collection",
+          "sku": "EM-SV035-151-ULTRA-PREMIUM-COLLECTION",
+          "url": "https://examplemart.example.com/p/sv035-151-ultra-premium-collection"
+        },
+        {
+          "product_id": "sv035-151-zapdos-ex-collection",
+          "sku": "EM-SV035-151-ZAPDOS-EX-COLLECTION",
+          "url": "https://examplemart.example.com/p/sv035-151-zapdos-ex-collection"
+        },
+        {
+          "product_id": "sv045-paldean-fates-elite-trainer-box",
+          "sku": "EM-SV045-PALDEAN-FATES-ELITE-TRAINER-BOX",
+          "url": "https://examplemart.example.com/p/sv045-paldean-fates-elite-trainer-box"
+        },
+        {
+          "product_id": "sv045-paldean-fates-mini-tin",
+          "sku": "EM-SV045-PALDEAN-FATES-MINI-TIN",
+          "url": "https://examplemart.example.com/p/sv045-paldean-fates-mini-tin"
+        },
+        {
+          "product_id": "sv045-paldean-fates-tech-sticker-collection",
+          "sku": "EM-SV045-PALDEAN-FATES-TECH-STICKER-COLLECTION",
+          "url": "https://examplemart.example.com/p/sv045-paldean-fates-tech-sticker-collection"
+        },
+        {
+          "product_id": "sv05-temporal-forces-booster-box",
+          "sku": "EM-SV05-TEMPORAL-FORCES-BOOSTER-BOX",
+          "url": "https://examplemart.example.com/p/sv05-temporal-forces-booster-box"
+        },
+        {
+          "product_id": "sv06-twilight-masquerade-booster-box",
+          "sku": "EM-SV06-TWILIGHT-MASQUERADE-BOOSTER-BOX",
+          "url": "https://examplemart.example.com/p/sv06-twilight-masquerade-booster-box"
+        },
+        {
+          "product_id": "sv06-twilight-masquerade-elite-trainer-box",
+          "sku": "EM-SV06-TWILIGHT-MASQUERADE-ELITE-TRAINER-BOX",
+          "url": "https://examplemart.example.com/p/sv06-twilight-masquerade-elite-trainer-box"
+        },
+        {
+          "product_id": "sv07-stellar-crown-booster-pack",
+          "sku": "EM-SV07-STELLAR-CROWN-BOOSTER-PACK",
+          "url": "https://examplemart.example.com/p/sv07-stellar-crown-booster-pack"
+        },
+        {
+          "product_id": "sv07-stellar-crown-elite-trainer-box",
+          "sku": "EM-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX",
+          "url": "https://examplemart.example.com/p/sv07-stellar-crown-elite-trainer-box"
+        },
+        {
+          "product_id": "sv08-surging-sparks-booster-box",
+          "sku": "EM-SV08-SURGING-SPARKS-BOOSTER-BOX",
+          "url": "https://examplemart.example.com/p/sv08-surging-sparks-booster-box"
+        },
+        {
+          "product_id": "sv08-surging-sparks-booster-bundle",
+          "sku": "EM-SV08-SURGING-SPARKS-BOOSTER-BUNDLE",
+          "url": "https://examplemart.example.com/p/sv08-surging-sparks-booster-bundle"
+        },
+        {
+          "product_id": "sv08-surging-sparks-elite-trainer-box",
+          "sku": "EM-SV08-SURGING-SPARKS-ELITE-TRAINER-BOX",
+          "url": "https://examplemart.example.com/p/sv08-surging-sparks-elite-trainer-box"
+        },
+        {
+          "product_id": "sv08-surging-sparks-mini-tin",
+          "sku": "EM-SV08-SURGING-SPARKS-MINI-TIN",
+          "url": "https://examplemart.example.com/p/sv08-surging-sparks-mini-tin"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-booster-pack",
+          "sku": "EM-SV085-PRISMATIC-EVOLUTIONS-BOOSTER-PACK",
+          "url": "https://examplemart.example.com/p/sv085-prismatic-evolutions-booster-pack"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-elite-trainer-box",
+          "sku": "EM-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX",
+          "url": "https://examplemart.example.com/p/sv085-prismatic-evolutions-elite-trainer-box"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-super-premium-collection",
+          "sku": "EM-SV085-PRISMATIC-EVOLUTIONS-SUPER-PREMIUM-COLLECTION",
+          "url": "https://examplemart.example.com/p/sv085-prismatic-evolutions-super-premium-collection"
+        },
+        {
+          "product_id": "sv09-journey-together-elite-trainer-box",
+          "sku": "EM-SV09-JOURNEY-TOGETHER-ELITE-TRAINER-BOX",
+          "url": "https://examplemart.example.com/p/sv09-journey-together-elite-trainer-box"
+        },
+        {
+          "product_id": "sv10-destined-rivals-booster-bundle",
+          "sku": "EM-SV10-DESTINED-RIVALS-BOOSTER-BUNDLE",
+          "url": "https://examplemart.example.com/p/sv10-destined-rivals-booster-bundle"
+        }
+      ]
+    },
+    {
+      "id": "cardbarn",
+      "name": "CardBarn (placeholder)",
+      "site": "https://shop.cardbarn.example.com/",
+      "note": "Placeholder hobby shop. Smaller range, shorter error pause.",
+      "policy": {
+        "min_interval_s": 420.0,
+        "robots_allows": true,
+        "max_errors_before_pause": 4,
+        "pause_s": 1800.0,
+        "user_agent": "JarvisPokeWatch/1 (+personal use; contact in app settings)"
+      },
+      "skus": [
+        {
+          "product_id": "sv035-151-booster-bundle",
+          "sku": "CB-SV035-151-BOOSTER-BUNDLE",
+          "url": "https://shop.cardbarn.example.com/item/sv035-151-booster-bundle"
+        },
+        {
+          "product_id": "sv035-151-ultra-premium-collection",
+          "sku": "CB-SV035-151-ULTRA-PREMIUM-COLLECTION",
+          "url": "https://shop.cardbarn.example.com/item/sv035-151-ultra-premium-collection"
+        },
+        {
+          "product_id": "sv035-151-zapdos-ex-collection",
+          "sku": "CB-SV035-151-ZAPDOS-EX-COLLECTION",
+          "url": "https://shop.cardbarn.example.com/item/sv035-151-zapdos-ex-collection"
+        },
+        {
+          "product_id": "sv045-paldean-fates-mini-tin",
+          "sku": "CB-SV045-PALDEAN-FATES-MINI-TIN",
+          "url": "https://shop.cardbarn.example.com/item/sv045-paldean-fates-mini-tin"
+        },
+        {
+          "product_id": "sv045-paldean-fates-tech-sticker-collection",
+          "sku": "CB-SV045-PALDEAN-FATES-TECH-STICKER-COLLECTION",
+          "url": "https://shop.cardbarn.example.com/item/sv045-paldean-fates-tech-sticker-collection"
+        },
+        {
+          "product_id": "sv05-temporal-forces-booster-box",
+          "sku": "CB-SV05-TEMPORAL-FORCES-BOOSTER-BOX",
+          "url": "https://shop.cardbarn.example.com/item/sv05-temporal-forces-booster-box"
+        },
+        {
+          "product_id": "sv06-twilight-masquerade-booster-box",
+          "sku": "CB-SV06-TWILIGHT-MASQUERADE-BOOSTER-BOX",
+          "url": "https://shop.cardbarn.example.com/item/sv06-twilight-masquerade-booster-box"
+        },
+        {
+          "product_id": "sv07-stellar-crown-booster-pack",
+          "sku": "CB-SV07-STELLAR-CROWN-BOOSTER-PACK",
+          "url": "https://shop.cardbarn.example.com/item/sv07-stellar-crown-booster-pack"
+        },
+        {
+          "product_id": "sv07-stellar-crown-elite-trainer-box",
+          "sku": "CB-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX",
+          "url": "https://shop.cardbarn.example.com/item/sv07-stellar-crown-elite-trainer-box"
+        },
+        {
+          "product_id": "sv08-surging-sparks-booster-box",
+          "sku": "CB-SV08-SURGING-SPARKS-BOOSTER-BOX",
+          "url": "https://shop.cardbarn.example.com/item/sv08-surging-sparks-booster-box"
+        },
+        {
+          "product_id": "sv08-surging-sparks-booster-bundle",
+          "sku": "CB-SV08-SURGING-SPARKS-BOOSTER-BUNDLE",
+          "url": "https://shop.cardbarn.example.com/item/sv08-surging-sparks-booster-bundle"
+        },
+        {
+          "product_id": "sv08-surging-sparks-mini-tin",
+          "sku": "CB-SV08-SURGING-SPARKS-MINI-TIN",
+          "url": "https://shop.cardbarn.example.com/item/sv08-surging-sparks-mini-tin"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-booster-pack",
+          "sku": "CB-SV085-PRISMATIC-EVOLUTIONS-BOOSTER-PACK",
+          "url": "https://shop.cardbarn.example.com/item/sv085-prismatic-evolutions-booster-pack"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-elite-trainer-box",
+          "sku": "CB-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX",
+          "url": "https://shop.cardbarn.example.com/item/sv085-prismatic-evolutions-elite-trainer-box"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-super-premium-collection",
+          "sku": "CB-SV085-PRISMATIC-EVOLUTIONS-SUPER-PREMIUM-COLLECTION",
+          "url": "https://shop.cardbarn.example.com/item/sv085-prismatic-evolutions-super-premium-collection"
+        },
+        {
+          "product_id": "sv10-destined-rivals-booster-bundle",
+          "sku": "CB-SV10-DESTINED-RIVALS-BOOSTER-BUNDLE",
+          "url": "https://shop.cardbarn.example.com/item/sv10-destined-rivals-booster-bundle"
+        }
+      ]
+    },
+    {
+      "id": "hobbyhub",
+      "name": "HobbyHub (placeholder)",
+      "site": "https://hobbyhub.example.com/",
+      "note": "Placeholder marketplace. Asks to be polled gently: 10 minutes.",
+      "policy": {
+        "min_interval_s": 600.0,
+        "robots_allows": true,
+        "max_errors_before_pause": 3,
+        "pause_s": 2700.0,
+        "user_agent": "JarvisPokeWatch/1 (+personal use; contact in app settings)"
+      },
+      "skus": [
+        {
+          "product_id": "sv035-151-booster-bundle",
+          "sku": "HH-SV035-151-BOOSTER-BUNDLE",
+          "url": "https://hobbyhub.example.com/catalog/sv035-151-booster-bundle"
+        },
+        {
+          "product_id": "sv035-151-zapdos-ex-collection",
+          "sku": "HH-SV035-151-ZAPDOS-EX-COLLECTION",
+          "url": "https://hobbyhub.example.com/catalog/sv035-151-zapdos-ex-collection"
+        },
+        {
+          "product_id": "sv045-paldean-fates-mini-tin",
+          "sku": "HH-SV045-PALDEAN-FATES-MINI-TIN",
+          "url": "https://hobbyhub.example.com/catalog/sv045-paldean-fates-mini-tin"
+        },
+        {
+          "product_id": "sv05-temporal-forces-booster-box",
+          "sku": "HH-SV05-TEMPORAL-FORCES-BOOSTER-BOX",
+          "url": "https://hobbyhub.example.com/catalog/sv05-temporal-forces-booster-box"
+        },
+        {
+          "product_id": "sv06-twilight-masquerade-elite-trainer-box",
+          "sku": "HH-SV06-TWILIGHT-MASQUERADE-ELITE-TRAINER-BOX",
+          "url": "https://hobbyhub.example.com/catalog/sv06-twilight-masquerade-elite-trainer-box"
+        },
+        {
+          "product_id": "sv07-stellar-crown-elite-trainer-box",
+          "sku": "HH-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX",
+          "url": "https://hobbyhub.example.com/catalog/sv07-stellar-crown-elite-trainer-box"
+        },
+        {
+          "product_id": "sv08-surging-sparks-booster-bundle",
+          "sku": "HH-SV08-SURGING-SPARKS-BOOSTER-BUNDLE",
+          "url": "https://hobbyhub.example.com/catalog/sv08-surging-sparks-booster-bundle"
+        },
+        {
+          "product_id": "sv08-surging-sparks-mini-tin",
+          "sku": "HH-SV08-SURGING-SPARKS-MINI-TIN",
+          "url": "https://hobbyhub.example.com/catalog/sv08-surging-sparks-mini-tin"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-elite-trainer-box",
+          "sku": "HH-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX",
+          "url": "https://hobbyhub.example.com/catalog/sv085-prismatic-evolutions-elite-trainer-box"
+        },
+        {
+          "product_id": "sv09-journey-together-elite-trainer-box",
+          "sku": "HH-SV09-JOURNEY-TOGETHER-ELITE-TRAINER-BOX",
+          "url": "https://hobbyhub.example.com/catalog/sv09-journey-together-elite-trainer-box"
+        }
+      ]
+    },
+    {
+      "id": "bigboxco",
+      "name": "BigBoxCo (placeholder)",
+      "site": "https://www.bigboxco.example.com/",
+      "note": "Placeholder big-box retailer, shipped with robots_allows=false: it stands for a host whose robots.txt disallows its listing pages. It stays in the catalog so its deep links can be shown to a person, and the scheduler never polls it. The app overwrites robots_allows from its own robots.txt check; it is not a value to flip by hand.",
+      "policy": {
+        "min_interval_s": 900.0,
+        "robots_allows": false,
+        "max_errors_before_pause": 5,
+        "pause_s": 7200.0,
+        "user_agent": "JarvisPokeWatch/1 (+personal use; contact in app settings)"
+      },
+      "skus": [
+        {
+          "product_id": "sv035-151-booster-bundle",
+          "sku": "BB-SV035-151-BOOSTER-BUNDLE",
+          "url": "https://www.bigboxco.example.com/product/sv035-151-booster-bundle"
+        },
+        {
+          "product_id": "sv045-paldean-fates-elite-trainer-box",
+          "sku": "BB-SV045-PALDEAN-FATES-ELITE-TRAINER-BOX",
+          "url": "https://www.bigboxco.example.com/product/sv045-paldean-fates-elite-trainer-box"
+        },
+        {
+          "product_id": "sv05-temporal-forces-booster-box",
+          "sku": "BB-SV05-TEMPORAL-FORCES-BOOSTER-BOX",
+          "url": "https://www.bigboxco.example.com/product/sv05-temporal-forces-booster-box"
+        },
+        {
+          "product_id": "sv07-stellar-crown-booster-pack",
+          "sku": "BB-SV07-STELLAR-CROWN-BOOSTER-PACK",
+          "url": "https://www.bigboxco.example.com/product/sv07-stellar-crown-booster-pack"
+        },
+        {
+          "product_id": "sv08-surging-sparks-booster-bundle",
+          "sku": "BB-SV08-SURGING-SPARKS-BOOSTER-BUNDLE",
+          "url": "https://www.bigboxco.example.com/product/sv08-surging-sparks-booster-bundle"
+        },
+        {
+          "product_id": "sv085-prismatic-evolutions-booster-pack",
+          "sku": "BB-SV085-PRISMATIC-EVOLUTIONS-BOOSTER-PACK",
+          "url": "https://www.bigboxco.example.com/product/sv085-prismatic-evolutions-booster-pack"
+        },
+        {
+          "product_id": "sv09-journey-together-elite-trainer-box",
+          "sku": "BB-SV09-JOURNEY-TOGETHER-ELITE-TRAINER-BOX",
+          "url": "https://www.bigboxco.example.com/product/sv09-journey-together-elite-trainer-box"
+        }
+      ]
+    }
+  ]
+}

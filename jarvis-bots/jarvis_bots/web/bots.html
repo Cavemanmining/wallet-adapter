@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bots</title>
+<style>
+:root{
+  --bg:#14151a; --bg2:#1b1d23; --card:#1a1c22; --rule:#2a2d35;
+  --fg:#eceadf; --fg2:#a8a396; --fg3:#7b7668;
+  --accent:#e0a72a; --ok:#6fbf5a; --warn:#e0a72a; --err:#df5d44; --idle:#6f7b8a;
+  --badge-fg:#14151a;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f6f4ef; --bg2:#eeebe3; --card:#fffdf8; --rule:#ddd8cc;
+    --fg:#1b1810; --fg2:#57513f; --fg3:#847d68;
+    --accent:#9a6508; --ok:#3f7f2c; --warn:#9a6508; --err:#b23a25; --idle:#5a6674;
+    --badge-fg:#fffdf8;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f6f4ef; --bg2:#eeebe3; --card:#fffdf8; --rule:#ddd8cc;
+  --fg:#1b1810; --fg2:#57513f; --fg3:#847d68;
+  --accent:#9a6508; --ok:#3f7f2c; --warn:#9a6508; --err:#b23a25; --idle:#5a6674;
+  --badge-fg:#fffdf8;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--sans);
+  font-size:16px; line-height:1.45;
+  padding:0 max(16px, env(safe-area-inset-left)) calc(32px + env(safe-area-inset-bottom));
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px;margin:0 auto}
+header{padding:22px 0 14px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-size:26px;line-height:1.1;letter-spacing:-.02em;margin:0;font-weight:700}
+.sub{color:var(--fg2);font-size:13.5px;margin:0}
+.demo{
+  margin-left:auto;font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--badge-fg);background:var(--accent);
+  padding:3px 9px;border-radius:999px;
+}
+.demo[hidden]{display:none}
+/* The chip alone was not enough. A wired-up launcher showing three
+   invented bots -- one of them a plausible "Stock watcher" -- is the most
+   expensive way to lose an afternoon, so the page says in words that it is
+   not talking to anything and what to do about it. */
+.demobar{
+  margin:10px 0 4px;padding:11px 13px;border-radius:12px;
+  border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);
+  font-size:13.5px;line-height:1.45;
+}
+.demobar b{display:block;margin-bottom:2px}
+.demobar code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+  background:color-mix(in srgb,var(--fg) 10%,transparent);padding:1px 5px;border-radius:5px;
+}
+.demobar[hidden]{display:none}
+
+.list{display:grid;gap:12px;margin:8px 0 0;padding:0;list-style:none}
+.bot{
+  background:var(--card);border:1px solid var(--rule);border-radius:14px;
+  padding:14px 15px;display:grid;gap:10px;
+}
+.bot-top{display:flex;align-items:flex-start;gap:12px}
+.icon{
+  width:38px;height:38px;flex:none;border-radius:10px;background:var(--bg2);
+  display:grid;place-items:center;color:var(--fg2);
+}
+.icon svg{width:21px;height:21px}
+.names{min-width:0;flex:1}
+.name{font-size:16.5px;font-weight:650;letter-spacing:-.01em;margin:0}
+.blurb{color:var(--fg2);font-size:13.5px;margin:2px 0 0}
+
+.pill{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;border:1px solid currentColor;
+  white-space:nowrap;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.pill[data-state="running"]{color:var(--ok)}
+.pill[data-state="paused"]{color:var(--warn)}
+.pill[data-state="error"]{color:var(--err)}
+.pill[data-state="idle"]{color:var(--idle)}
+
+.stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin:0;padding:0}
+.stat{display:grid;gap:1px}
+.stat dt{color:var(--fg3);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin:0}
+.stat dd{margin:0;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+
+.last{color:var(--fg2);font-size:13px;border-top:1px solid var(--rule);padding-top:9px;margin:0;overflow-wrap:anywhere}
+.last time{color:var(--fg3);font-variant-numeric:tabular-nums}
+
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{
+  min-height:44px;display:inline-flex;align-items:center;gap:7px;
+  padding:0 16px;border-radius:10px;border:1px solid var(--rule);
+  background:var(--bg2);color:var(--fg);font:inherit;font-size:14.5px;font-weight:650;
+  cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;
+}
+.btn:hover{border-color:var(--fg3)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--accent);color:var(--badge-fg);border-color:transparent}
+.btn svg{width:17px;height:17px}
+
+.note{
+  margin:20px 0 0;padding:12px 14px;border-left:3px solid var(--accent);
+  background:var(--bg2);color:var(--fg2);font-size:13.5px;border-radius:0 8px 8px 0;
+}
+.note b{color:var(--fg)}
+
+.state{padding:36px 8px;text-align:center;color:var(--fg2)}
+.state h2{font-size:17px;margin:0 0 6px;color:var(--fg)}
+.state p{margin:0;font-size:14px}
+[hidden]{display:none !important}
+@media (max-width:420px){
+  .bot-top{flex-wrap:wrap}
+  .pill{order:3;margin-left:50px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Bots</h1>
+      <p class="sub">Background helpers that watch things for you and say when to act.</p>
+    </div>
+    <span class="demo" id="demo" hidden>Demo data</span>
+  </header>
+
+  <p class="demobar" id="demobar" hidden>
+    <b>These are not your bots.</b>
+    This page could not reach a bots API, so it is showing made-up examples.
+    Serve it next to <code>GET /api/bots/</code>, or set
+    <code>window.JARVIS_BOTS_API</code> (or
+    <code>&lt;meta name="jarvis-bots-api" content="/api/bots/"&gt;</code>)
+    to wherever yours lives. See <code>web/README.md</code>.
+  </p>
+
+  <div class="state" id="loading"><p>Loading bots…</p></div>
+  <div class="state" id="empty" hidden>
+    <h2>No bots yet</h2>
+    <p>When a bot is configured it appears here with its status.</p>
+  </div>
+  <div class="state" id="error" hidden>
+    <h2>Could not reach Jarvis</h2>
+    <p id="error-detail">The bots service did not answer.</p>
+  </div>
+
+  <ul class="list" id="list" hidden></ul>
+
+  <p class="note">
+    <b>These bots watch and decide. They never buy.</b>
+    When something clears your rules you get an alert with a link to the
+    seller's own page, and you complete the purchase there. That keeps your
+    accounts in good standing with every retailer.
+  </p>
+</div>
+
+<script>
+"use strict";
+
+/* The page reads one endpoint and renders it. Everything below is display
+   logic; no bot behaviour lives here.
+
+   GET (window.JARVIS_BOTS_API || none) ->
+   { generated_at: <unix seconds>,
+     bots: [ { id, name, blurb, kind, state: "running"|"paused"|"error"|"idle",
+               attention: <int>, href: <string>,
+               stats: [ { label, value } ],
+               last_event: { at: <unix seconds>, text } | null,
+               can_pause: <bool> } ] }
+
+   With no API configured the page renders DEMO_STATE so it is explorable
+   with nothing behind it, and says so in the header. */
+
+const DEMO_STATE = {
+  generated_at: 1758340000,
+  bots: [
+    {
+      id: "poke",
+      name: "Pokémon buying assistant",
+      blurb: "Watches sealed product prices and stock, and alerts when one clears your rules.",
+      kind: "cart",
+      state: "running",
+      attention: 1,
+      href: "./poke.html",
+      can_pause: true,
+      stats: [
+        { label: "Watching", value: "12 products" },
+        { label: "Budget left", value: "$312.40" },
+        { label: "Alerts today", value: "1" }
+      ],
+      last_event: { at: 1758338920, text: "Buy: Surging Sparks ETB at $47.99, 19% under market" }
+    },
+    {
+      id: "descent",
+      name: "Descent pre-roll",
+      blurb: "Generates map layouts for reachable nodes ahead of time so portals open instantly.",
+      kind: "grid",
+      state: "running",
+      attention: 0,
+      href: "./descent.html",
+      can_pause: true,
+      stats: [
+        { label: "Cached", value: "48 nodes" },
+        { label: "Open time", value: "0.14 s" }
+      ],
+      last_event: { at: 1758337100, text: "Pre-rolled 6 tier-9 nodes" }
+    },
+    {
+      id: "restock",
+      name: "Stock watcher",
+      blurb: "Polls the sources the buying assistant depends on and reports when one misbehaves.",
+      kind: "radar",
+      state: "paused",
+      attention: 0,
+      href: "./sources.html",
+      can_pause: true,
+      stats: [
+        { label: "Sources", value: "4" },
+        { label: "Paused", value: "1" }
+      ],
+      last_event: { at: 1758330500, text: "cardbarn paused after 5 errors" }
+    }
+  ]
+};
+
+const ICONS = {
+  cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 4h2l2.2 10.2a1.6 1.6 0 0 0 1.6 1.3h7.4a1.6 1.6 0 0 0 1.6-1.2L20 7.5H6.2"/><circle cx="10" cy="19.2" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="19.2" r="1.3" fill="currentColor" stroke="none"/></svg>',
+  grid:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="4.4" r="1.5"/><circle cx="19.2" cy="8.4" r="1.5"/><circle cx="19.2" cy="15.8" r="1.5"/><circle cx="12" cy="19.8" r="1.5"/><circle cx="4.8" cy="15.8" r="1.5"/><circle cx="4.8" cy="8.4" r="1.5"/><path d="M12 6v4M17.9 9.2 13.8 11M17.9 15 13.8 13M12 14v4M6.1 15 10.2 13M6.1 9.2 10.2 11"/></svg>',
+  radar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="4.4"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><path d="M12 12 17.8 6.4"/></svg>',
+  bot:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="7.5" width="16" height="12" rx="3.5"/><path d="M12 7.5V4.4" stroke-linecap="round"/><circle cx="9.2" cy="13" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.8" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>'
+};
+
+const STATE_WORD = { running: "Running", paused: "Paused", error: "Failing", idle: "Idle" };
+
+const el = (id) => document.getElementById(id);
+
+function ago(unixSeconds, now) {
+  const s = Math.max(0, Math.floor(now - unixSeconds));
+  if (s < 60) return "just now";
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + (m === 1 ? " min ago" : " mins ago");
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + (h === 1 ? " hour ago" : " hours ago");
+  const d = Math.floor(h / 24);
+  return d + (d === 1 ? " day ago" : " days ago");
+}
+
+function render(state, isDemo) {
+  el("loading").hidden = true;
+  el("error").hidden = true;
+  el("demo").hidden = !isDemo;
+  el("demobar").hidden = !isDemo;
+
+  const bots = Array.isArray(state.bots) ? state.bots : [];
+  const list = el("list");
+  list.textContent = "";
+
+  if (bots.length === 0) { el("empty").hidden = false; list.hidden = true; return; }
+  el("empty").hidden = true;
+  list.hidden = false;
+
+  // "now" comes from the payload, not the device clock, so a phone with a
+  // wrong clock does not render "in 3 hours ago".
+  const now = Number(state.generated_at) || Math.floor(Date.now() / 1000);
+
+  for (const bot of bots) {
+    const li = document.createElement("li");
+    li.className = "bot";
+
+    const top = document.createElement("div");
+    top.className = "bot-top";
+
+    const icon = document.createElement("div");
+    icon.className = "icon";
+    icon.innerHTML = ICONS[bot.kind] || ICONS.bot;
+
+    const names = document.createElement("div");
+    names.className = "names";
+    const name = document.createElement("p");
+    name.className = "name";
+    name.textContent = bot.name || bot.id || "Unnamed bot";
+    const blurb = document.createElement("p");
+    blurb.className = "blurb";
+    blurb.textContent = bot.blurb || "";
+    names.append(name, blurb);
+
+    // The pill carries the word as well as the colour, so state survives
+    // colour blindness, a greyscale screen and a screenshot.
+    const stateKey = STATE_WORD[bot.state] ? bot.state : "idle";
+    const pill = document.createElement("span");
+    pill.className = "pill";
+    pill.dataset.state = stateKey;
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    const word = document.createElement("span");
+    const attention = Math.max(0, Number(bot.attention) || 0);
+    word.textContent = attention > 0
+      ? `${STATE_WORD[stateKey]} · ${attention}`
+      : STATE_WORD[stateKey];
+    pill.append(dot, word);
+    pill.setAttribute("aria-label",
+      attention > 0
+        ? `${STATE_WORD[stateKey]}, ${attention} needing attention`
+        : STATE_WORD[stateKey]);
+
+    top.append(icon, names, pill);
+    li.append(top);
+
+    if (Array.isArray(bot.stats) && bot.stats.length) {
+      const dl = document.createElement("dl");
+      dl.className = "stats";
+      for (const s of bot.stats) {
+        const wrap = document.createElement("div");
+        wrap.className = "stat";
+        const dt = document.createElement("dt");
+        dt.textContent = s.label;
+        const dd = document.createElement("dd");
+        dd.textContent = s.value;
+        wrap.append(dt, dd);
+        dl.append(wrap);
+      }
+      li.append(dl);
+    }
+
+    if (bot.last_event && bot.last_event.text) {
+      const last = document.createElement("p");
+      last.className = "last";
+      last.textContent = bot.last_event.text + " ";
+      const t = document.createElement("time");
+      const at = Number(bot.last_event.at);
+      if (Number.isFinite(at)) {
+        t.dateTime = new Date(at * 1000).toISOString();
+        t.textContent = "· " + ago(at, now);
+      }
+      last.append(t);
+      li.append(last);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    const open = document.createElement("a");
+    open.className = "btn primary";
+    open.href = bot.href || "#";
+    open.textContent = "Open";
+    actions.append(open);
+
+    if (bot.can_pause) {
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "btn";
+      const paused = bot.state === "paused";
+      toggle.textContent = paused ? "Resume" : "Pause";
+      toggle.addEventListener("click", () => setPaused(bot, !paused, toggle));
+      actions.append(toggle);
+    }
+    li.append(actions);
+    list.append(li);
+  }
+}
+
+// Where the API is, and whether anybody said so.
+//
+// Until this existed the page read `window.JARVIS_BOTS_API` and nothing
+// else, and web/README.md -- the drop-in guide for this very file -- never
+// mentioned that global. Follow the README to the letter, with a correct
+// backend running, and the page silently rendered three invented bots for
+// ever. So: three ways to say it, the last of which is the obvious one.
+//
+//   1. window.JARVIS_BOTS_API = "/api/bots/"
+//   2. <meta name="jarvis-bots-api" content="/api/bots/">
+//   3. nothing at all -> DEFAULT_API, because a page served by the app that
+//      owns /api/bots/ should just work.
+//
+// The difference between 1-2 and 3 is what a failure means. Configured
+// explicitly, a dead endpoint is an error and the page says so. Falling
+// back to the default, a dead endpoint means nobody wired anything, which
+// is the standalone-preview case -- demo data, and a banner saying so.
+const DEFAULT_API = "/api/bots/";
+
+function apiConfig() {
+  if (typeof window.JARVIS_BOTS_API === "string" && window.JARVIS_BOTS_API) {
+    return { url: window.JARVIS_BOTS_API, explicit: true };
+  }
+  const meta = document.querySelector('meta[name="jarvis-bots-api"]');
+  const content = meta && meta.getAttribute("content");
+  if (content) return { url: content, explicit: true };
+  return { url: DEFAULT_API, explicit: false };
+}
+
+async function setPaused(bot, paused, button) {
+  const { url: api } = apiConfig();
+  button.disabled = true;
+  if (demoMode) {
+    // Demo mode: reflect the choice locally so the control is honest about
+    // being interactive, without pretending anything was saved.
+    bot.state = paused ? "paused" : "running";
+    render(DEMO_STATE, true);
+    return;
+  }
+  try {
+    const response = await fetch(api.replace(/\/$/, "") + "/pause", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ bot_id: bot.id, paused }),
+    });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    await load();
+  } catch (e) {
+    button.disabled = false;
+    fail("Could not change that bot: " + e.message);
+  }
+}
+
+function fail(detail) {
+  el("loading").hidden = true;
+  el("list").hidden = true;
+  el("empty").hidden = true;
+  el("error").hidden = false;
+  el("error-detail").textContent = detail;
+}
+
+// Set once the first load has decided there is nothing to talk to, so the
+// pause control knows not to pretend it saved anything.
+var demoMode = false;
+
+async function load() {
+  const { url: api, explicit } = apiConfig();
+  try {
+    const response = await fetch(api, {
+      headers: { accept: "application/json" },
+      credentials: "same-origin",
+    });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const state = await response.json();
+    if (!state || !Array.isArray(state.bots)) {
+      throw new Error("the response is not a bots payload");
+    }
+    demoMode = false;
+    render(state, false);
+  } catch (e) {
+    if (explicit) {
+      // Somebody pointed this page at an endpoint. A dead one is a fault
+      // to show, never a reason to invent three bots.
+      fail("The bots service did not answer (" + e.message + ").");
+      return;
+    }
+    demoMode = true;
+    render(DEMO_STATE, true);
+  }
+}
+
+load();
+</script>
+</body>
+</html>

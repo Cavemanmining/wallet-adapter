@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "note": "Canonical Pokemon sealed products, independent of any retailer. Names, set codes and release dates are real because that is how the owner searches; msrp is integer cents (jarvis_poke/contracts.py, 'Money is integer cents') and is the published list price, which for anything in demand is fiction -- the engine scores against the market reference, not against this. Singles are out of scope by design.",
+  "products": [
+    {
+      "id": "sv035-151-booster-bundle",
+      "name": "Pokemon TCG: Scarlet & Violet-151 Booster Bundle",
+      "set_code": "SV03.5",
+      "kind": "bundle",
+      "msrp": 2694,
+      "released": "2023-09-22",
+      "upc": "820650855658"
+    },
+    {
+      "id": "sv035-151-ultra-premium-collection",
+      "name": "Pokemon TCG: Scarlet & Violet-151 Ultra-Premium Collection",
+      "set_code": "SV03.5",
+      "kind": "premium_collection",
+      "msrp": 11999,
+      "released": "2023-09-22",
+      "upc": null
+    },
+    {
+      "id": "sv035-151-zapdos-ex-collection",
+      "name": "Pokemon TCG: Scarlet & Violet-151 Zapdos ex Collection",
+      "set_code": "SV03.5",
+      "kind": "collection_box",
+      "msrp": 1999,
+      "released": "2023-09-22",
+      "upc": null
+    },
+    {
+      "id": "sv045-paldean-fates-elite-trainer-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Paldean Fates Elite Trainer Box",
+      "set_code": "SV04.5",
+      "kind": "elite_trainer_box",
+      "msrp": 4999,
+      "released": "2024-01-26",
+      "upc": null
+    },
+    {
+      "id": "sv045-paldean-fates-mini-tin",
+      "name": "Pokemon TCG: Scarlet & Violet-Paldean Fates Mini Tin",
+      "set_code": "SV04.5",
+      "kind": "tin",
+      "msrp": 849,
+      "released": "2024-01-26",
+      "upc": null
+    },
+    {
+      "id": "sv045-paldean-fates-tech-sticker-collection",
+      "name": "Pokemon TCG: Scarlet & Violet-Paldean Fates Tech Sticker Collection",
+      "set_code": "SV04.5",
+      "kind": "collection_box",
+      "msrp": 1999,
+      "released": "2024-01-26",
+      "upc": null
+    },
+    {
+      "id": "sv05-temporal-forces-booster-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Temporal Forces Booster Box",
+      "set_code": "SV05",
+      "kind": "booster_box",
+      "msrp": 16164,
+      "released": "2024-03-22",
+      "upc": null
+    },
+    {
+      "id": "sv06-twilight-masquerade-booster-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Twilight Masquerade Booster Box",
+      "set_code": "SV06",
+      "kind": "booster_box",
+      "msrp": 16164,
+      "released": "2024-05-24",
+      "upc": null
+    },
+    {
+      "id": "sv06-twilight-masquerade-elite-trainer-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Twilight Masquerade Elite Trainer Box",
+      "set_code": "SV06",
+      "kind": "elite_trainer_box",
+      "msrp": 4999,
+      "released": "2024-05-24",
+      "upc": null
+    },
+    {
+      "id": "sv07-stellar-crown-booster-pack",
+      "name": "Pokemon TCG: Scarlet & Violet-Stellar Crown Booster Pack",
+      "set_code": "SV07",
+      "kind": "booster_pack",
+      "msrp": 449,
+      "released": "2024-09-13",
+      "upc": null
+    },
+    {
+      "id": "sv07-stellar-crown-elite-trainer-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Stellar Crown Elite Trainer Box",
+      "set_code": "SV07",
+      "kind": "elite_trainer_box",
+      "msrp": 4999,
+      "released": "2024-09-13",
+      "upc": null
+    },
+    {
+      "id": "sv08-surging-sparks-booster-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Surging Sparks Booster Box",
+      "set_code": "SV08",
+      "kind": "booster_box",
+      "msrp": 16164,
+      "released": "2024-11-08",
+      "upc": null
+    },
+    {
+      "id": "sv08-surging-sparks-booster-bundle",
+      "name": "Pokemon TCG: Scarlet & Violet-Surging Sparks Booster Bundle",
+      "set_code": "SV08",
+      "kind": "bundle",
+      "msrp": 2694,
+      "released": "2024-11-08",
+      "upc": null
+    },
+    {
+      "id": "sv08-surging-sparks-elite-trainer-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Surging Sparks Elite Trainer Box",
+      "set_code": "SV08",
+      "kind": "elite_trainer_box",
+      "msrp": 4999,
+      "released": "2024-11-08",
+      "upc": "820650860355"
+    },
+    {
+      "id": "sv08-surging-sparks-mini-tin",
+      "name": "Pokemon TCG: Scarlet & Violet-Surging Sparks Mini Tin",
+      "set_code": "SV08",
+      "kind": "tin",
+      "msrp": 849,
+      "released": "2024-11-08",
+      "upc": null
+    },
+    {
+      "id": "sv085-prismatic-evolutions-booster-pack",
+      "name": "Pokemon TCG: Scarlet & Violet-Prismatic Evolutions Booster Pack",
+      "set_code": "SV08.5",
+      "kind": "booster_pack",
+      "msrp": 449,
+      "released": "2025-01-17",
+      "upc": null
+    },
+    {
+      "id": "sv085-prismatic-evolutions-elite-trainer-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Prismatic Evolutions Elite Trainer Box",
+      "set_code": "SV08.5",
+      "kind": "elite_trainer_box",
+      "msrp": 4999,
+      "released": "2025-01-17",
+      "upc": null
+    },
+    {
+      "id": "sv085-prismatic-evolutions-super-premium-collection",
+      "name": "Pokemon TCG: Scarlet & Violet-Prismatic Evolutions Super-Premium Collection: Eevee",
+      "set_code": "SV08.5",
+      "kind": "premium_collection",
+      "msrp": 11999,
+      "released": "2025-01-17",
+      "upc": null
+    },
+    {
+      "id": "sv09-journey-together-elite-trainer-box",
+      "name": "Pokemon TCG: Scarlet & Violet-Journey Together Elite Trainer Box",
+      "set_code": "SV09",
+      "kind": "elite_trainer_box",
+      "msrp": 5999,
+      "released": "2025-03-28",
+      "upc": null
+    },
+    {
+      "id": "sv10-destined-rivals-booster-bundle",
+      "name": "Pokemon TCG: Scarlet & Violet-Destined Rivals Booster Bundle",
+      "set_code": "SV10",
+      "kind": "bundle",
+      "msrp": 2999,
+      "released": "2025-05-30",
+      "upc": null
+    }
+  ]
+}

@@ -1,0 +1,1585 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="referrer" content="no-referrer">
+<title>Pokemon Watch</title>
+<style>
+/* ------------------------------------------------------------------
+   Tokens. Dark first (this is a phone tool used at odd hours), with a
+   light theme under prefers-color-scheme and an explicit data-theme
+   override on <html> that beats the media query either way.
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: dark light;
+  --bg:        #0d1016;
+  --surface:   #151a22;
+  --surface-2: #1b212b;
+  --sunken:    #10141b;
+  --line:      #262e3a;
+  --text:      #e8edf5;
+  --muted:     #98a3b3;
+  --faint:     #6f7a8a;
+  --accent:    #7cc4ff;
+  --accent-ink:#06182b;
+  --focus:     #7cc4ff;
+  --good:      #5ddc93;
+  --bad:       #ff9b8c;
+  --spark:     #93a3ba;
+  --spark-hi:  #e8edf5;
+  --median:    #6f7a8a;
+  --buy-bg:    #46d67f;  --buy-fg:    #062112;
+  --watch-bg:  #ffc53d;  --watch-fg:  #3a2600;
+  --nostock-bg:#3b465a;  --nostock-fg:#dde4ef;
+  --skip-bg:   #232b37;  --skip-fg:   #a3aebe;
+  --warn-bg:   #3a2a12;  --warn-fg:   #ffd79a;
+  --err-bg:    #3a1c1c;  --err-fg:    #ffc2b8;
+  --shadow:    0 1px 0 rgba(255,255,255,.03), 0 8px 24px rgba(0,0,0,.35);
+
+  --fs-xs:  0.75rem;
+  --fs-sm:  0.8125rem;
+  --fs-base:0.9375rem;
+  --fs-md:  1.0625rem;
+  --fs-lg:  1.3125rem;
+  --fs-xl:  1.75rem;
+  --fs-xxl: 2.125rem;
+
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
+  --r-1: 8px; --r-2: 12px; --r-3: 16px; --r-pill: 999px;
+  --tap: 44px;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light dark;
+    --bg:        #f4f6f9;
+    --surface:   #ffffff;
+    --surface-2: #f0f3f7;
+    --sunken:    #eaeef4;
+    --line:      #dde3ec;
+    --text:      #10151d;
+    --muted:     #58626f;
+    --faint:     #79838f;
+    --accent:    #0b5fc0;
+    --accent-ink:#ffffff;
+    --focus:     #0b5fc0;
+    --good:      #0a6b3d;
+    --bad:       #b3261e;
+    --spark:     #6b7686;
+    --spark-hi:  #10151d;
+    --median:    #9aa4b1;
+    --buy-bg:    #0a6b3d;  --buy-fg:    #ffffff;
+    --watch-bg:  #ffc53d;  --watch-fg:  #3a2600;
+    --nostock-bg:#dbe2ec;  --nostock-fg:#2b3644;
+    --skip-bg:   #eceff4;  --skip-fg:   #59636f;
+    --warn-bg:   #fff3d6;  --warn-fg:   #6a4a00;
+    --err-bg:    #ffe6e2;  --err-fg:    #8c1d16;
+    --shadow:    0 1px 2px rgba(16,21,29,.06), 0 8px 20px rgba(16,21,29,.07);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light dark;
+  --bg:        #f4f6f9;
+  --surface:   #ffffff;
+  --surface-2: #f0f3f7;
+  --sunken:    #eaeef4;
+  --line:      #dde3ec;
+  --text:      #10151d;
+  --muted:     #58626f;
+  --faint:     #79838f;
+  --accent:    #0b5fc0;
+  --accent-ink:#ffffff;
+  --focus:     #0b5fc0;
+  --good:      #0a6b3d;
+  --bad:       #b3261e;
+  --spark:     #6b7686;
+  --spark-hi:  #10151d;
+  --median:    #9aa4b1;
+  --buy-bg:    #0a6b3d;  --buy-fg:    #ffffff;
+  --watch-bg:  #ffc53d;  --watch-fg:  #3a2600;
+  --nostock-bg:#dbe2ec;  --nostock-fg:#2b3644;
+  --skip-bg:   #eceff4;  --skip-fg:   #59636f;
+  --warn-bg:   #fff3d6;  --warn-fg:   #6a4a00;
+  --err-bg:    #ffe6e2;  --err-fg:    #8c1d16;
+  --shadow:    0 1px 2px rgba(16,21,29,.06), 0 8px 20px rgba(16,21,29,.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: var(--fs-base)/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow-x: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+.vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: var(--sp-3); top: -60px; z-index: 50;
+  background: var(--surface); color: var(--text); border: 1px solid var(--line);
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--r-1); text-decoration: none;
+}
+.skip-link:focus { top: var(--sp-3); }
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 var(--sp-4); }
+
+/* ---------------------------------------------------------- header */
+header.top {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top);
+}
+.top-row { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) 0 var(--sp-2); }
+.brand { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.brand .eyebrow {
+  font-size: var(--fs-xs); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--faint);
+}
+.brand h1 {
+  margin: 0; font-size: var(--fs-md); font-weight: 650; letter-spacing: -.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.brand .compact {
+  display: none; font-size: var(--fs-sm); color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.top[data-compact="true"] .brand .eyebrow { display: none; }
+.top[data-compact="true"] .brand .compact { display: block; }
+.iconbtn {
+  min-width: var(--tap); min-height: var(--tap);
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--line); border-radius: var(--r-1);
+  font: inherit; font-size: var(--fs-sm); cursor: pointer;
+  padding: 0 10px;
+}
+.iconbtn:hover { background: var(--surface-2); }
+.iconbtn svg { width: 18px; height: 18px; display: block; }
+.badge-demo {
+  display: inline-flex; align-items: center; gap: 6px; flex: none; white-space: nowrap;
+  background: var(--warn-bg); color: var(--warn-fg);
+  border: 1px solid color-mix(in srgb, var(--warn-fg) 30%, transparent);
+  border-radius: var(--r-pill); padding: 4px 10px;
+  font-size: var(--fs-xs); font-weight: 650; letter-spacing: .02em;
+}
+.badge-demo svg { width: 13px; height: 13px; }
+
+/* ---------------------------------------------------------- budget */
+.budget { margin-top: var(--sp-4); }
+.budget-head { display: flex; align-items: baseline; gap: var(--sp-2); }
+.budget-head .label {
+  font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .1em; color: var(--faint);
+  margin-right: auto;
+}
+.budget-amount { font-size: var(--fs-xxl); font-weight: 680; letter-spacing: -.02em; line-height: 1.1; }
+.budget-amount .unit { font-size: var(--fs-sm); font-weight: 500; color: var(--muted); margin-left: 6px; letter-spacing: 0; }
+.meter {
+  position: relative; height: 10px; border-radius: var(--r-pill);
+  background: var(--sunken); border: 1px solid var(--line);
+  margin: var(--sp-2) 0 var(--sp-2); overflow: hidden;
+}
+.meter > i {
+  display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--buy-bg));
+  transition: width .35s ease;
+}
+.meter[data-full="true"] > i { background: var(--bad); }
+.budget-sub { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); font-size: var(--fs-sm); color: var(--muted); }
+.budget-sub b { color: var(--text); font-weight: 600; }
+#budget-edit-btn { margin-left: auto; }
+.linkbtn {
+  background: none; border: 0; color: var(--accent); font: inherit; font-size: var(--fs-sm);
+  cursor: pointer; padding: 6px 2px; min-height: var(--tap); text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.budget-edit { display: none; gap: var(--sp-2); align-items: flex-end; margin-top: var(--sp-3); flex-wrap: wrap; }
+.budget-edit[data-open="true"] { display: flex; }
+
+/* ------------------------------------------------------------ bits */
+main { padding-bottom: var(--sp-6); }
+section { margin-top: var(--sp-5); }
+.sec-head { display: flex; align-items: baseline; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+.sec-head h2 { margin: 0; font-size: var(--fs-sm); text-transform: uppercase; letter-spacing: .1em; color: var(--faint); font-weight: 650; }
+.sec-head .count { font-size: var(--fs-sm); color: var(--faint); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-2); box-shadow: var(--shadow);
+}
+.note { color: var(--muted); font-size: var(--fs-sm); }
+.banner {
+  display: flex; gap: var(--sp-2); align-items: flex-start;
+  border-radius: var(--r-1); padding: var(--sp-3); margin-bottom: var(--sp-3);
+  font-size: var(--fs-sm);
+}
+.banner.warn { background: var(--warn-bg); color: var(--warn-fg); }
+.banner.err  { background: var(--err-bg);  color: var(--err-fg); }
+.banner svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+.banner button { margin-left: auto; }
+
+/* filters */
+.filters { display: flex; flex-wrap: wrap; gap: var(--sp-2); padding: 2px 0 var(--sp-2); }
+.filters::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; min-height: var(--tap); padding: 0 14px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+  font: inherit; font-size: var(--fs-sm); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+.chip .n { font-variant-numeric: tabular-nums; opacity: .75; }
+
+/* ------------------------------------------------------- watch rows */
+.rows { display: flex; flex-direction: column; gap: var(--sp-2); list-style: none; margin: 0; padding: 0; }
+.row { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-2); overflow: hidden; }
+.row[data-action="buy"] { border-color: color-mix(in srgb, var(--buy-bg) 55%, var(--line)); }
+.rowhead {
+  display: grid; grid-template-columns: 1fr auto; gap: var(--sp-1) var(--sp-3);
+  width: 100%; min-height: 64px; padding: var(--sp-3);
+  background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.rowhead:hover { background: var(--surface-2); }
+.rowhead .title { grid-column: 1; min-width: 0; }
+.rowhead .name {
+  font-size: var(--fs-base); font-weight: 600; line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.rowhead .sub { font-size: var(--fs-xs); color: var(--faint); margin-top: 2px; }
+.rowhead .pillcell { grid-column: 2; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: var(--sp-3); }
+.rowhead .figures { grid-column: 1; display: flex; align-items: center; flex-wrap: wrap; gap: 2px var(--sp-3); margin-top: var(--sp-1); }
+.price { font-size: var(--fs-lg); font-weight: 660; letter-spacing: -.01em; }
+.price.none { color: var(--muted); font-weight: 500; font-size: var(--fs-md); }
+.price small { font-size: var(--fs-xs); font-weight: 500; color: var(--faint); margin-left: 4px; letter-spacing: 0; white-space: nowrap; }
+.med { font-size: var(--fs-sm); color: var(--muted); }
+.delta { font-size: var(--fs-sm); font-weight: 650; }
+.delta.good { color: var(--good); }
+.delta.bad  { color: var(--bad); }
+.delta.flat { color: var(--muted); }
+.spark { display: block; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: var(--r-pill); padding: 7px 12px;
+  font-size: var(--fs-sm); font-weight: 750; letter-spacing: .06em; text-transform: uppercase;
+  white-space: nowrap; border: 1px solid transparent;
+}
+.pill svg { width: 14px; height: 14px; flex: none; }
+.pill[data-action="buy"]      { background: var(--buy-bg);     color: var(--buy-fg); }
+.pill[data-action="watch"]    { background: var(--watch-bg);   color: var(--watch-fg); }
+.pill[data-action="no_stock"] { background: var(--nostock-bg); color: var(--nostock-fg); }
+.pill[data-action="skip"]     { background: var(--skip-bg);    color: var(--skip-fg); border-color: var(--line); }
+.pill.sm { font-size: var(--fs-xs); padding: 4px 9px; }
+.chev { color: var(--faint); }
+.chev svg { width: 18px; height: 18px; transition: transform .2s ease; }
+.rowhead[aria-expanded="true"] .chev svg { transform: rotate(180deg); }
+
+/* ---------------------------------------------------------- panel */
+.panel { border-top: 1px solid var(--line); padding: var(--sp-4) var(--sp-3) var(--sp-3); background: var(--surface-2); }
+.panel h3 {
+  margin: 0 0 var(--sp-2); font-size: var(--fs-xs); text-transform: uppercase;
+  letter-spacing: .1em; color: var(--faint); font-weight: 650;
+}
+.panel .block + .block { margin-top: var(--sp-5); }
+.reasons { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--sp-2); }
+.reasons li {
+  position: relative; padding-left: 18px; font-size: var(--fs-sm); color: var(--text); line-height: 1.5;
+}
+.reasons li::before {
+  content: ""; position: absolute; left: 4px; top: .62em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--faint);
+}
+.offers { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-1); overflow: hidden; }
+.offer {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px var(--sp-3);
+  background: var(--surface); padding: var(--sp-2) var(--sp-3); align-items: baseline;
+}
+.offer .who { font-size: var(--fs-sm); font-weight: 600; }
+.offer .when { font-size: var(--fs-xs); color: var(--faint); }
+.offer .amt { font-size: var(--fs-base); font-weight: 620; text-align: right; }
+.offer .amt.none { color: var(--muted); font-weight: 500; font-size: var(--fs-sm); }
+.offer .parts { font-size: var(--fs-xs); color: var(--faint); text-align: right; }
+.offer[data-best="true"] { background: color-mix(in srgb, var(--accent) 9%, var(--surface)); }
+.stock {
+  display: inline-block; font-size: var(--fs-xs); color: var(--muted);
+  border: 1px solid var(--line); border-radius: var(--r-pill); padding: 1px 7px; margin-left: 6px;
+  vertical-align: 1px;
+}
+
+/* rule editor */
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--sp-3); }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label { font-size: var(--fs-xs); color: var(--muted); }
+.field input[type="text"], .field input[type="number"], .field input[type="search"] {
+  min-height: var(--tap); width: 100%;
+  background: var(--sunken); color: var(--text);
+  border: 1px solid var(--line); border-radius: var(--r-1);
+  padding: 0 var(--sp-3); font: inherit; font-size: var(--fs-base);
+  font-variant-numeric: tabular-nums;
+}
+.field input:invalid, .field input[aria-invalid="true"] { border-color: var(--bad); }
+.field .hint { font-size: var(--fs-xs); color: var(--faint); }
+.field .hint.bad { color: var(--bad); }
+.actions { display: flex; gap: var(--sp-2); align-items: center; flex-wrap: wrap; margin-top: var(--sp-3); }
+.btn {
+  min-height: var(--tap); padding: 0 var(--sp-4); border-radius: var(--r-1);
+  border: 1px solid var(--line); background: var(--surface); color: var(--text);
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.btn:hover { background: var(--surface-2); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn[disabled] { opacity: .55; cursor: default; }
+.switch {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  min-height: var(--tap); padding: 0 var(--sp-2) 0 0;
+  background: none; border: 0; color: var(--text); font: inherit; font-size: var(--fs-sm); cursor: pointer;
+}
+.switch .track {
+  width: 44px; height: 26px; border-radius: var(--r-pill); background: var(--sunken);
+  border: 1px solid var(--line); position: relative; flex: none; transition: background .2s ease;
+}
+.switch .track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
+  border-radius: 50%; background: var(--muted); transition: transform .2s ease, background .2s ease;
+}
+.switch[aria-checked="true"] .track { background: color-mix(in srgb, var(--buy-bg) 40%, var(--sunken)); border-color: color-mix(in srgb, var(--buy-bg) 60%, var(--line)); }
+.switch[aria-checked="true"] .track::after { transform: translateX(18px); background: var(--buy-bg); }
+
+/* handoff link */
+.handoff { margin-top: var(--sp-4); }
+.gotolink {
+  display: flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  min-height: 52px; width: 100%; border-radius: var(--r-1);
+  background: var(--text); color: var(--bg); text-decoration: none;
+  font-weight: 680; font-size: var(--fs-base); padding: 0 var(--sp-4); text-align: center;
+}
+.gotolink:hover { filter: brightness(.92); }
+.gotolink svg { width: 17px; height: 17px; flex: none; }
+.handoff .disclaim { margin-top: var(--sp-2); font-size: var(--fs-xs); color: var(--muted); text-align: center; line-height: 1.5; }
+
+/* --------------------------------------------------------- sources */
+.strip { display: grid; grid-template-columns: 1fr; gap: var(--sp-2); }
+@media (min-width: 520px) { .strip { grid-template-columns: 1fr 1fr; } }
+.src { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--sp-1) var(--sp-3); padding: var(--sp-3); }
+.src .who { display: flex; align-items: center; gap: var(--sp-2); font-weight: 600; font-size: var(--fs-sm); }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--muted); }
+.src[data-state="ok"] .dot { background: var(--buy-bg); }
+.src[data-state="backoff"] .dot { background: var(--watch-bg); }
+.src[data-state="paused"] .dot { background: var(--nostock-fg); }
+.src[data-state="disallowed"] .dot, .src[data-state="error"] .dot { background: var(--bad); }
+.src .meta { grid-column: 1; font-size: var(--fs-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
+.src .sw { grid-column: 2; grid-row: 1 / span 2; }
+
+/* ---------------------------------------------------------- recent */
+.log { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-2); overflow: hidden; }
+.log > li { background: var(--surface); }
+.log details > summary {
+  display: grid; grid-template-columns: auto 1fr; gap: var(--sp-1) var(--sp-3);
+  padding: var(--sp-3); cursor: pointer; min-height: 56px; align-items: center;
+  list-style: none;
+}
+.log details > summary::-webkit-details-marker { display: none; }
+.log details > summary:hover { background: var(--surface-2); }
+.log .when { grid-column: 1; grid-row: 1 / span 2; font-size: var(--fs-xs); color: var(--faint); font-variant-numeric: tabular-nums; width: 62px; }
+.log .head { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.log .what { font-size: var(--fs-sm); font-weight: 600; }
+.log .why { grid-column: 2; font-size: var(--fs-xs); color: var(--muted); line-height: 1.45; }
+.log .full { padding: 0 var(--sp-3) var(--sp-3) calc(var(--sp-3) + 62px + var(--sp-3)); }
+
+/* ------------------------------------------------- states + footer */
+.state-box { padding: var(--sp-6) var(--sp-4); text-align: center; }
+.state-box h3 { margin: 0 0 var(--sp-2); font-size: var(--fs-md); }
+.state-box p { margin: 0 auto; max-width: 46ch; color: var(--muted); font-size: var(--fs-sm); }
+.state-box .actions { justify-content: center; }
+.skeleton { display: flex; flex-direction: column; gap: var(--sp-2); }
+.sk {
+  height: 80px; border-radius: var(--r-2); border: 1px solid var(--line);
+  background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%);
+  background-size: 200% 100%; animation: sheen 1.4s linear infinite;
+}
+@keyframes sheen { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+footer.foot { border-top: 1px solid var(--line); margin-top: var(--sp-6); padding: var(--sp-5) 0 var(--sp-6); color: var(--muted); font-size: var(--fs-xs); line-height: 1.6; }
+footer.foot p { margin: 0 0 var(--sp-2); }
+footer.foot b { color: var(--text); font-weight: 650; }
+.toast {
+  position: fixed; left: 50%; bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
+  transform: translateX(-50%); z-index: 40; max-width: min(92vw, 420px);
+  background: var(--surface); color: var(--text); border: 1px solid var(--line);
+  box-shadow: var(--shadow); border-radius: var(--r-1); padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-sm); opacity: 0; pointer-events: none; transition: opacity .2s ease;
+}
+.toast[data-show="true"] { opacity: 1; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#watchlist">Skip to watchlist</a>
+
+<header class="top" id="top" data-compact="false">
+  <div class="wrap">
+    <div class="top-row">
+      <div class="brand">
+        <span class="eyebrow">Jarvis</span>
+        <h1>Pokemon Watch</h1>
+        <span class="compact num" id="compact-budget"></span>
+      </div>
+      <span id="mode-badge"></span>
+      <button class="iconbtn" id="theme-btn" type="button" title="Theme" aria-label="Theme: follow system"></button>
+      <button class="iconbtn" id="refresh-btn" type="button" title="Refresh" aria-label="Refresh"></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="budget" aria-label="Budget">
+    <div class="budget-head">
+      <span class="label">Budget left</span>
+      <span class="note num" id="updated-at">&nbsp;</span>
+    </div>
+    <div class="budget-amount num"><span id="budget-remaining">—</span><span class="unit" id="budget-of"></span></div>
+    <div class="meter" id="budget-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Budget committed this window"><i style="width:0%"></i></div>
+    <div class="budget-sub">
+      <span><b class="num" id="budget-spent">—</b> committed this window</span>
+      <span id="budget-held"></span>
+      <span id="budget-window"></span>
+      <button class="linkbtn" id="budget-edit-btn" type="button" aria-expanded="false" aria-controls="budget-edit">Edit budget</button>
+    </div>
+    <form class="budget-edit" id="budget-edit" data-open="false">
+      <div class="field" style="flex:1 1 160px">
+        <label for="budget-total">Total for the window (dollars)</label>
+        <input type="text" id="budget-total" inputmode="decimal" autocomplete="off" spellcheck="false">
+        <span class="hint" id="budget-hint">Stored as integer cents.</span>
+      </div>
+      <button class="btn primary" type="submit">Save</button>
+      <button class="btn" type="button" id="budget-cancel">Cancel</button>
+    </form>
+  </section>
+
+  <div id="banner-slot"></div>
+
+  <section id="watchlist" aria-labelledby="watchlist-h">
+    <div class="sec-head">
+      <h2 id="watchlist-h">Watchlist</h2>
+      <span class="count" id="watch-count"></span>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Filter watchlist by decision"></div>
+    <div id="watch-slot" aria-live="polite" aria-busy="true"></div>
+  </section>
+
+  <section id="sources" aria-labelledby="sources-h">
+    <div class="sec-head">
+      <h2 id="sources-h">Sources</h2>
+      <span class="count" id="sources-count"></span>
+    </div>
+    <div class="strip" id="sources-slot"></div>
+    <p class="note" style="margin:var(--sp-2) 0 0">Each source has a minimum interval of at least 30 seconds, honours robots.txt, and widens its own backoff after errors. Pausing stops it at once.</p>
+  </section>
+
+  <section id="recent" aria-labelledby="recent-h">
+    <div class="sec-head">
+      <h2 id="recent-h">Recent decisions</h2>
+      <span class="count" id="recent-count"></span>
+    </div>
+    <div id="recent-slot"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><b>This page watches and decides. It never buys.</b> There is no cart, no card, no order. When something clears your rules the page shows you why and gives you a link; tapping it opens the retailer's own product page, where you complete the purchase yourself.</p>
+    <p id="foot-mode"></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="application/json" id="jarvis-demo-state">{"generated_at":1789938840,"demo":true,"budget":{"total_cents":60000,"spent_cents":8999,"reserved_cents":25498,"remaining_cents":25503,"window_days":30},"watch":[{"product":{"id":"sv08-surging-sparks-booster-box","name":"Pokemon TCG: Scarlet & Violet-Surging Sparks Booster Box","set_code":"SV08","kind":"booster_box","msrp_cents":16164},"rule":{"product_id":"sv08-surging-sparks-booster-box","max_price_cents":14900,"quantity":1,"min_discount_pct":5.0,"enabled":true,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":{"source":"cardbarn","sku":"CA-SV08-SURGING-SPARKS-BOOSTER-BOX","price_cents":13499,"shipping_cents":0,"landed_cents":13499,"stock":"in_stock","url":"https://cardbarn.example.com/p/sv08-surging-sparks-booster-box","at":1789938420},"offers":[{"source":"cardbarn","sku":"CA-SV08-SURGING-SPARKS-BOOSTER-BOX","price_cents":13499,"shipping_cents":0,"landed_cents":13499,"stock":"in_stock","url":"https://cardbarn.example.com/p/sv08-surging-sparks-booster-box","at":1789938420},{"source":"examplemart","sku":"EX-SV08-SURGING-SPARKS-BOOSTER-BOX","price_cents":14299,"shipping_cents":0,"landed_cents":14299,"stock":"in_stock","url":"https://examplemart.example.com/p/sv08-surging-sparks-booster-box","at":1789938580},{"source":"hobbyhub","sku":"HO-SV08-SURGING-SPARKS-BOOSTER-BOX","price_cents":13950,"shipping_cents":899,"landed_cents":14849,"stock":"limited","url":"https://hobbyhub.example.com/p/sv08-surging-sparks-booster-box","at":1789936860},{"source":"bigboxco","sku":"BI-SV08-SURGING-SPARKS-BOOSTER-BOX","price_cents":null,"shipping_cents":0,"landed_cents":null,"stock":"out_of_stock","url":"https://bigboxco.example.com/p/sv08-surging-sparks-booster-box","at":1789936200}],"market":{"median_cents":15250,"p25_cents":14399,"low_cents":13199,"samples":27,"stale":false,"window_days":30},"verdict":{"product_id":"sv08-surging-sparks-booster-box","action":"buy","at":1789938840,"source":"cardbarn","sku":"CA-SV08-SURGING-SPARKS-BOOSTER-BOX","price_cents":13499,"landed_cents":13499,"market_cents":15250,"discount_pct":11.482,"quantity":1,"url":"https://cardbarn.example.com/p/sv08-surging-sparks-booster-box","reasons":["rule: up to $149.00 landed at 5% off or better","3 of 4 listing(s) purchasable: cardbarn $134.99, examplemart $142.99, hobbyhub $148.49","the rule allows any source","cheapest is cardbarn at $134.99 (landed), shipping $0.00","market reference $152.50 (median of 27 samples)","price is plausible for this product","at or under the $149.00 ceiling (by $14.01)","11.48% off meets the 5% the rule asks for (needs $144.87 or better)","quantity 1, no per-customer limit seen","1 x $134.99 = $134.99 fits the $255.00 single-verdict cap ($510.01 left)","never alerted before"]},"trend":[[1789355640,15848],[1789377240,14983],[1789398840,14977],[1789420440,15643],[1789442040,14240],[1789463640,14490],[1789485240,14096],[1789506840,15281],[1789528440,14467],[1789550040,13911],[1789571640,14390],[1789593240,15176],[1789614840,14638],[1789636440,14746],[1789658040,15192],[1789679640,null],[1789701240,15261],[1789722840,13743],[1789744440,13656],[1789766040,14183],[1789787640,14665],[1789809240,13873],[1789830840,14989],[1789852440,14699],[1789874040,13553],[1789895640,14132],[1789917240,13668],[1789938840,13502]],"held_cents":13499},{"product":{"id":"sv085-prismatic-evolutions-elite-trainer-box","name":"Pokemon TCG: Scarlet & Violet-Prismatic Evolutions Elite Trainer Box","set_code":"SV08.5","kind":"elite_trainer_box","msrp_cents":4999},"rule":{"product_id":"sv085-prismatic-evolutions-elite-trainer-box","max_price_cents":6500,"quantity":2,"min_discount_pct":8.0,"enabled":true,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":{"source":"examplemart","sku":"EX-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX","price_cents":7499,"shipping_cents":599,"landed_cents":8098,"stock":"in_stock","url":"https://examplemart.example.com/p/sv085-prismatic-evolutions-elite-trainer-box","at":1789938660},"offers":[{"source":"examplemart","sku":"EX-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX","price_cents":7499,"shipping_cents":599,"landed_cents":8098,"stock":"in_stock","url":"https://examplemart.example.com/p/sv085-prismatic-evolutions-elite-trainer-box","at":1789938660},{"source":"cardbarn","sku":"CA-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX","price_cents":8299,"shipping_cents":0,"landed_cents":8299,"stock":"in_stock","url":"https://cardbarn.example.com/p/sv085-prismatic-evolutions-elite-trainer-box","at":1789937940},{"source":"hobbyhub","sku":"HO-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX","price_cents":null,"shipping_cents":0,"landed_cents":null,"stock":"out_of_stock","url":"https://hobbyhub.example.com/p/sv085-prismatic-evolutions-elite-trainer-box","at":1789935540}],"market":{"median_cents":7995,"p25_cents":7650,"low_cents":7399,"samples":31,"stale":false,"window_days":30},"verdict":{"product_id":"sv085-prismatic-evolutions-elite-trainer-box","action":"watch","at":1789938840,"source":"examplemart","sku":"EX-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX","price_cents":7499,"landed_cents":8098,"market_cents":7995,"discount_pct":-1.2883,"quantity":0,"url":"https://examplemart.example.com/p/sv085-prismatic-evolutions-elite-trainer-box","reasons":["rule: up to $65.00 landed x2 at 8% off or better","2 of 3 listing(s) purchasable: examplemart $80.98, cardbarn $82.99","the rule allows any source","cheapest is examplemart at $80.98 (landed), shipping $5.99","market reference $79.95 (median of 31 samples)","price is plausible for this product","$80.98 is $15.98 over the $65.00 ceiling"]},"trend":[[1789355640,8117],[1789377240,8303],[1789398840,7899],[1789420440,7853],[1789442040,8431],[1789463640,8143],[1789485240,8383],[1789506840,8218],[1789528440,8188],[1789550040,8062],[1789571640,8346],[1789593240,7902],[1789614840,8015],[1789636440,8501],[1789658040,7717],[1789679640,8437],[1789701240,null],[1789722840,8425],[1789744440,8142],[1789766040,8429],[1789787640,8021],[1789809240,null],[1789830840,8123],[1789852440,8098],[1789874040,8326],[1789895640,8311],[1789917240,8351],[1789938840,7667]],"held_cents":0},{"product":{"id":"sv09-journey-together-elite-trainer-box","name":"Pokemon TCG: Scarlet & Violet-Journey Together Elite Trainer Box","set_code":"SV09","kind":"elite_trainer_box","msrp_cents":5999},"rule":{"product_id":"sv09-journey-together-elite-trainer-box","max_price_cents":5499,"quantity":1,"min_discount_pct":0.0,"enabled":true,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":null,"offers":[{"source":"examplemart","sku":"EX-SV09-JOURNEY-TOGETHER-ELITE-TRAINER-BOX","price_cents":null,"shipping_cents":0,"landed_cents":null,"stock":"out_of_stock","url":"https://examplemart.example.com/p/sv09-journey-together-elite-trainer-box","at":1789938540},{"source":"cardbarn","sku":"CA-SV09-JOURNEY-TOGETHER-ELITE-TRAINER-BOX","price_cents":null,"shipping_cents":0,"landed_cents":null,"stock":"out_of_stock","url":"https://cardbarn.example.com/p/sv09-journey-together-elite-trainer-box","at":1789938200},{"source":"bigboxco","sku":"BI-SV09-JOURNEY-TOGETHER-ELITE-TRAINER-BOX","price_cents":null,"shipping_cents":0,"landed_cents":null,"stock":"unknown","url":"https://bigboxco.example.com/p/sv09-journey-together-elite-trainer-box","at":1789933440}],"market":{"median_cents":5750,"p25_cents":5499,"low_cents":5299,"samples":12,"stale":false,"window_days":30},"verdict":{"product_id":"sv09-journey-together-elite-trainer-box","action":"no_stock","at":1789938840,"source":null,"sku":null,"price_cents":null,"landed_cents":null,"market_cents":null,"discount_pct":null,"quantity":0,"url":"","reasons":["rule: up to $54.99 landed","nothing purchasable across 3 listing(s): out_of_stock, no price x2, unknown, no price x1"]},"trend":[[1789355640,5683],[1789377240,5870],[1789398840,null],[1789420440,5609],[1789442040,5633],[1789463640,5789],[1789485240,5880],[1789506840,5624],[1789528440,5636],[1789550040,5617],[1789571640,null],[1789593240,5981],[1789614840,null],[1789636440,null],[1789658040,5892],[1789679640,6029],[1789701240,6005],[1789722840,5625],[1789744440,5963],[1789766040,null],[1789787640,5735],[1789809240,5815],[1789830840,5725],[1789852440,5671],[1789874040,5699],[1789895640,null],[1789917240,null],[1789938840,6048]],"held_cents":0},{"product":{"id":"sv07-stellar-crown-elite-trainer-box","name":"Pokemon TCG: Scarlet & Violet-Stellar Crown Elite Trainer Box","set_code":"SV07","kind":"elite_trainer_box","msrp_cents":4999},"rule":{"product_id":"sv07-stellar-crown-elite-trainer-box","max_price_cents":4499,"quantity":1,"min_discount_pct":10.0,"enabled":true,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":{"source":"hobbyhub","sku":"HO-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX","price_cents":4299,"shipping_cents":0,"landed_cents":4299,"stock":"limited","url":"https://hobbyhub.example.com/p/sv07-stellar-crown-elite-trainer-box","at":1789938600},"offers":[{"source":"hobbyhub","sku":"HO-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX","price_cents":4299,"shipping_cents":0,"landed_cents":4299,"stock":"limited","url":"https://hobbyhub.example.com/p/sv07-stellar-crown-elite-trainer-box","at":1789938600},{"source":"examplemart","sku":"EX-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX","price_cents":4599,"shipping_cents":0,"landed_cents":4599,"stock":"in_stock","url":"https://examplemart.example.com/p/sv07-stellar-crown-elite-trainer-box","at":1789938630}],"market":{"median_cents":4650,"p25_cents":4450,"low_cents":4199,"samples":19,"stale":false,"window_days":30},"verdict":{"product_id":"sv07-stellar-crown-elite-trainer-box","action":"watch","at":1789938840,"source":"hobbyhub","sku":"HO-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX","price_cents":4299,"landed_cents":4299,"market_cents":4650,"discount_pct":7.5484,"quantity":0,"url":"https://hobbyhub.example.com/p/sv07-stellar-crown-elite-trainer-box","reasons":["rule: up to $44.99 landed at 10% off or better","2 of 2 listing(s) purchasable: hobbyhub $42.99, examplemart $45.99","the rule allows any source","cheapest is hobbyhub at $42.99 (landed), shipping $0.00","market reference $46.50 (median of 19 samples)","price is plausible for this product","at or under the $44.99 ceiling (by $2.00)","7.55% off is short of the 10% the rule asks for: that wants $41.85 or better"]},"trend":[[1789355640,null],[1789377240,4729],[1789398840,4719],[1789420440,4603],[1789442040,4674],[1789463640,4723],[1789485240,4627],[1789506840,4558],[1789528440,4756],[1789550040,4664],[1789571640,null],[1789593240,4527],[1789614840,null],[1789636440,4583],[1789658040,4475],[1789679640,4610],[1789701240,4492],[1789722840,4811],[1789744440,null],[1789766040,4801],[1789787640,4719],[1789809240,4695],[1789830840,4447],[1789852440,null],[1789874040,4380],[1789895640,4751],[1789917240,4363],[1789938840,4480]],"held_cents":0},{"product":{"id":"sv035-151-ultra-premium-collection","name":"Pokemon TCG: Scarlet & Violet-151 Ultra-Premium Collection","set_code":"SV03.5","kind":"premium_collection","msrp_cents":11999},"rule":{"product_id":"sv035-151-ultra-premium-collection","max_price_cents":12500,"quantity":1,"min_discount_pct":0.0,"enabled":true,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":{"source":"bigboxco","sku":"BI-SV035-151-ULTRA-PREMIUM-COLLECTION","price_cents":11999,"shipping_cents":0,"landed_cents":11999,"stock":"in_stock","url":"https://bigboxco.example.com/p/sv035-151-ultra-premium-collection","at":1789937340},"offers":[{"source":"bigboxco","sku":"BI-SV035-151-ULTRA-PREMIUM-COLLECTION","price_cents":11999,"shipping_cents":0,"landed_cents":11999,"stock":"in_stock","url":"https://bigboxco.example.com/p/sv035-151-ultra-premium-collection","at":1789937340},{"source":"cardbarn","sku":"CA-SV035-151-ULTRA-PREMIUM-COLLECTION","price_cents":12450,"shipping_cents":0,"landed_cents":12450,"stock":"in_stock","url":"https://cardbarn.example.com/p/sv035-151-ultra-premium-collection","at":1789938060}],"market":{"median_cents":13400,"p25_cents":12800,"low_cents":11999,"samples":23,"stale":false,"window_days":30},"verdict":{"product_id":"sv035-151-ultra-premium-collection","action":"buy","at":1789938840,"source":"bigboxco","sku":"BI-SV035-151-ULTRA-PREMIUM-COLLECTION","price_cents":11999,"landed_cents":11999,"market_cents":13400,"discount_pct":10.4552,"quantity":1,"url":"https://bigboxco.example.com/p/sv035-151-ultra-premium-collection","reasons":["rule: up to $125.00 landed","2 of 2 listing(s) purchasable: bigboxco $119.99, cardbarn $124.50","the rule allows any source","cheapest is bigboxco at $119.99 (landed), shipping $0.00","market reference $134.00 (median of 23 samples)","price is plausible for this product","at or under the $125.00 ceiling (by $5.01)","the rule asks for no particular discount; this is 10.46% off","quantity 1, no per-customer limit seen","1 x $119.99 = $119.99 fits the $187.51 single-verdict cap ($375.02 left)","never alerted before"]},"trend":[[1789355640,13783],[1789377240,13956],[1789398840,13289],[1789420440,12507],[1789442040,13236],[1789463640,13286],[1789485240,13486],[1789506840,13594],[1789528440,null],[1789550040,13997],[1789571640,13090],[1789593240,13487],[1789614840,13605],[1789636440,12364],[1789658040,13745],[1789679640,13459],[1789701240,13290],[1789722840,13941],[1789744440,13840],[1789766040,13340],[1789787640,13938],[1789809240,13527],[1789830840,12883],[1789852440,12543],[1789874040,12917],[1789895640,12750],[1789917240,12301],[1789938840,12755]],"held_cents":11999},{"product":{"id":"sv10-destined-rivals-booster-bundle","name":"Pokemon TCG: Scarlet & Violet-Destined Rivals Booster Bundle","set_code":"SV10","kind":"bundle","msrp_cents":2999},"rule":{"product_id":"sv10-destined-rivals-booster-bundle","max_price_cents":2799,"quantity":3,"min_discount_pct":0.0,"enabled":true,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":null,"offers":[{"source":"examplemart","sku":"EX-SV10-DESTINED-RIVALS-BOOSTER-BUNDLE","price_cents":2999,"shipping_cents":0,"landed_cents":2999,"stock":"preorder","url":"https://examplemart.example.com/p/sv10-destined-rivals-booster-bundle","at":1789938360},{"source":"hobbyhub","sku":"HO-SV10-DESTINED-RIVALS-BOOSTER-BUNDLE","price_cents":null,"shipping_cents":0,"landed_cents":null,"stock":"out_of_stock","url":"https://hobbyhub.example.com/p/sv10-destined-rivals-booster-bundle","at":1789937640}],"market":{"median_cents":2899,"p25_cents":2799,"low_cents":2699,"samples":8,"stale":false,"window_days":30},"verdict":{"product_id":"sv10-destined-rivals-booster-bundle","action":"no_stock","at":1789938840,"source":null,"sku":null,"price_cents":null,"landed_cents":null,"market_cents":null,"discount_pct":null,"quantity":0,"url":"","reasons":["rule: up to $27.99 landed x3","nothing purchasable across 2 listing(s): out_of_stock, no price x1, preorder x1"]},"trend":[[1789355640,3047],[1789377240,null],[1789398840,2956],[1789420440,null],[1789442040,null],[1789463640,null],[1789485240,2948],[1789506840,2927],[1789528440,null],[1789550040,null],[1789571640,null],[1789593240,null],[1789614840,null],[1789636440,3019],[1789658040,2870],[1789679640,null],[1789701240,3004],[1789722840,null],[1789744440,2901],[1789766040,null],[1789787640,2938],[1789809240,null],[1789830840,null],[1789852440,2855],[1789874040,2999],[1789895640,2950],[1789917240,2876],[1789938840,null]],"held_cents":0},{"product":{"id":"sv045-paldean-fates-mini-tin","name":"Pokemon TCG: Scarlet & Violet-Paldean Fates Mini Tin","set_code":"SV04.5","kind":"tin","msrp_cents":849},"rule":{"product_id":"sv045-paldean-fates-mini-tin","max_price_cents":799,"quantity":4,"min_discount_pct":0.0,"enabled":true,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":{"source":"cardbarn","sku":"CA-SV045-PALDEAN-FATES-MINI-TIN","price_cents":749,"shipping_cents":449,"landed_cents":1198,"stock":"in_stock","url":"https://cardbarn.example.com/p/sv045-paldean-fates-mini-tin","at":1789938180},"offers":[{"source":"cardbarn","sku":"CA-SV045-PALDEAN-FATES-MINI-TIN","price_cents":749,"shipping_cents":449,"landed_cents":1198,"stock":"in_stock","url":"https://cardbarn.example.com/p/sv045-paldean-fates-mini-tin","at":1789938180},{"source":"examplemart","sku":"EX-SV045-PALDEAN-FATES-MINI-TIN","price_cents":899,"shipping_cents":0,"landed_cents":899,"stock":"in_stock","url":"https://examplemart.example.com/p/sv045-paldean-fates-mini-tin","at":1789938620}],"market":{"median_cents":null,"p25_cents":null,"low_cents":null,"samples":2,"stale":true,"window_days":30},"verdict":{"product_id":"sv045-paldean-fates-mini-tin","action":"watch","at":1789938840,"source":"examplemart","sku":"EX-SV045-PALDEAN-FATES-MINI-TIN","price_cents":899,"landed_cents":899,"market_cents":null,"discount_pct":null,"quantity":0,"url":"https://examplemart.example.com/p/sv045-paldean-fates-mini-tin","reasons":["rule: up to $7.99 landed x4","2 of 2 listing(s) purchasable: examplemart $8.99, cardbarn $11.98","the rule allows any source","cheapest is examplemart at $8.99 (landed), shipping $0.00","market reference unusable (no median, only 2 sample(s), the samples are stale): no discount test applied, the $7.99 ceiling decides alone","price is plausible for this product","$8.99 is $1.00 over the $7.99 ceiling"]},"trend":[[1789355640,1097],[1789377240,null],[1789398840,1202],[1789420440,1114],[1789442040,1115],[1789463640,1112],[1789485240,1126],[1789506840,1213],[1789528440,1214],[1789550040,1137],[1789571640,null],[1789593240,1101],[1789614840,null],[1789636440,1153],[1789658040,1066],[1789679640,1083],[1789701240,1146],[1789722840,1065],[1789744440,1103],[1789766040,1160],[1789787640,1124],[1789809240,1206],[1789830840,1193],[1789852440,1176],[1789874040,1120],[1789895640,null],[1789917240,1153],[1789938840,1222]],"held_cents":0},{"product":{"id":"sv06-twilight-masquerade-booster-box","name":"Pokemon TCG: Scarlet & Violet-Twilight Masquerade Booster Box","set_code":"SV06","kind":"booster_box","msrp_cents":16164},"rule":{"product_id":"sv06-twilight-masquerade-booster-box","max_price_cents":13500,"quantity":1,"min_discount_pct":4.0,"enabled":false,"cooldown_s":3600.0,"include_shipping":true,"allowed_sources":[]},"best":{"source":"examplemart","sku":"EX-SV06-TWILIGHT-MASQUERADE-BOOSTER-BOX","price_cents":13750,"shipping_cents":0,"landed_cents":13750,"stock":"in_stock","url":"https://examplemart.example.com/p/sv06-twilight-masquerade-booster-box","at":1789938640},"offers":[{"source":"examplemart","sku":"EX-SV06-TWILIGHT-MASQUERADE-BOOSTER-BOX","price_cents":13750,"shipping_cents":0,"landed_cents":13750,"stock":"in_stock","url":"https://examplemart.example.com/p/sv06-twilight-masquerade-booster-box","at":1789938640}],"market":{"median_cents":13950,"p25_cents":13600,"low_cents":13200,"samples":22,"stale":false,"window_days":30},"verdict":{"product_id":"sv06-twilight-masquerade-booster-box","action":"skip","at":1789938840,"source":null,"sku":null,"price_cents":null,"landed_cents":null,"market_cents":null,"discount_pct":null,"quantity":0,"url":"","reasons":["the rule for sv06-twilight-masquerade-booster-box is switched off"]},"trend":[[1789355640,13324],[1789377240,13321],[1789398840,14161],[1789420440,13475],[1789442040,null],[1789463640,14432],[1789485240,13597],[1789506840,13609],[1789528440,14585],[1789550040,13995],[1789571640,null],[1789593240,13982],[1789614840,13540],[1789636440,14092],[1789658040,13827],[1789679640,14229],[1789701240,14572],[1789722840,14468],[1789744440,14455],[1789766040,14501],[1789787640,13369],[1789809240,13221],[1789830840,13950],[1789852440,14363],[1789874040,13564],[1789895640,13552],[1789917240,13341],[1789938840,13186]],"held_cents":0}],"sources":[{"id":"examplemart","name":"ExampleMart (placeholder)","state":"ok","next_due_at":1789938983,"errors":0,"paused_until":0,"min_interval_s":300.0,"robots_allows":true,"last_reason":"ok 200"},{"id":"cardbarn","name":"CardBarn (placeholder)","state":"ok","next_due_at":1789939152,"errors":0,"paused_until":0,"min_interval_s":420.0,"robots_allows":true,"last_reason":"not modified (304)"},{"id":"hobbyhub","name":"HobbyHub (placeholder)","state":"backoff","next_due_at":1789939980,"errors":2,"paused_until":0,"min_interval_s":600.0,"robots_allows":true,"last_reason":"2 consecutive errors: interval widened to 2400s"},{"id":"bigboxco","name":"BigBoxCo (placeholder)","state":"paused","next_due_at":1789941420,"errors":5,"paused_until":1789941420,"min_interval_s":900.0,"robots_allows":true,"last_reason":"5 consecutive errors: paused for 3600s"}],"recent":[{"product_id":"sv08-surging-sparks-booster-box","action":"buy","at":1789938750,"source":"cardbarn","sku":"CA-SV08-SURGING-SPARKS-BOOSTER-BOX","price_cents":13499,"landed_cents":13499,"market_cents":15250,"discount_pct":11.482,"quantity":1,"url":"https://cardbarn.example.com/p/sv08-surging-sparks-booster-box","reasons":["rule: up to $149.00 landed at 5% off or better","3 of 4 listing(s) purchasable: cardbarn $134.99, examplemart $142.99, hobbyhub $148.49","the rule allows any source","cheapest is cardbarn at $134.99 (landed), shipping $0.00","market reference $152.50 (median of 27 samples)","price is plausible for this product","at or under the $149.00 ceiling (by $14.01)","11.48% off meets the 5% the rule asks for (needs $144.87 or better)","quantity 1, no per-customer limit seen","1 x $134.99 = $134.99 fits the $255.00 single-verdict cap ($510.01 left)","never alerted before"],"product_name":"Pokemon TCG: Scarlet & Violet-Surging Sparks Booster Box","set_code":"SV08"},{"product_id":"sv085-prismatic-evolutions-elite-trainer-box","action":"watch","at":1789938690,"source":"examplemart","sku":"EX-SV085-PRISMATIC-EVOLUTIONS-ELITE-TRAINER-BOX","price_cents":7499,"landed_cents":8098,"market_cents":7995,"discount_pct":-1.2883,"quantity":0,"url":"https://examplemart.example.com/p/sv085-prismatic-evolutions-elite-trainer-box","reasons":["rule: up to $65.00 landed x2 at 8% off or better","2 of 3 listing(s) purchasable: examplemart $80.98, cardbarn $82.99","the rule allows any source","cheapest is examplemart at $80.98 (landed), shipping $5.99","market reference $79.95 (median of 31 samples)","price is plausible for this product","$80.98 is $15.98 over the $65.00 ceiling"],"product_name":"Pokemon TCG: Scarlet & Violet-Prismatic Evolutions Elite Trainer Box","set_code":"SV08.5"},{"product_id":"sv06-twilight-masquerade-booster-box","action":"skip","at":1789938640,"source":null,"sku":null,"price_cents":null,"landed_cents":null,"market_cents":null,"discount_pct":null,"quantity":0,"url":"https://examplemart.example.com/p/sv06-twilight-masquerade-booster-box","reasons":["the rule for sv06-twilight-masquerade-booster-box is switched off"],"product_name":"Pokemon TCG: Scarlet & Violet-Twilight Masquerade Booster Box","set_code":"SV06"},{"product_id":"sv07-stellar-crown-elite-trainer-box","action":"watch","at":1789938600,"source":"hobbyhub","sku":"HO-SV07-STELLAR-CROWN-ELITE-TRAINER-BOX","price_cents":4299,"landed_cents":4299,"market_cents":4650,"discount_pct":7.5484,"quantity":0,"url":"https://hobbyhub.example.com/p/sv07-stellar-crown-elite-trainer-box","reasons":["rule: up to $44.99 landed at 10% off or better","2 of 2 listing(s) purchasable: hobbyhub $42.99, examplemart $45.99","the rule allows any source","cheapest is hobbyhub at $42.99 (landed), shipping $0.00","market reference $46.50 (median of 19 samples)","price is plausible for this product","at or under the $44.99 ceiling (by $2.00)","7.55% off is short of the 10% the rule asks for: that wants $41.85 or better"],"product_name":"Pokemon TCG: Scarlet & Violet-Stellar Crown Elite Trainer Box","set_code":"SV07"},{"product_id":"sv09-journey-together-elite-trainer-box","action":"no_stock","at":1789938540,"source":null,"sku":null,"price_cents":null,"landed_cents":null,"market_cents":null,"discount_pct":null,"quantity":0,"url":"https://examplemart.example.com/p/sv09-journey-together-elite-trainer-box","reasons":["rule: up to $54.99 landed","nothing purchasable across 3 listing(s): out_of_stock, no price x2, unknown, no price x1"],"product_name":"Pokemon TCG: Scarlet & Violet-Journey Together Elite Trainer Box","set_code":"SV09"},{"product_id":"sv035-151-ultra-premium-collection","action":"buy","at":1789938480,"source":"bigboxco","sku":"BI-SV035-151-ULTRA-PREMIUM-COLLECTION","price_cents":11999,"landed_cents":11999,"market_cents":13400,"discount_pct":10.4552,"quantity":0,"url":"https://bigboxco.example.com/p/sv035-151-ultra-premium-collection","reasons":["rule: up to $125.00 landed","2 of 2 listing(s) purchasable: bigboxco $119.99, cardbarn $124.50","the rule allows any source","cheapest is bigboxco at $119.99 (landed), shipping $0.00","market reference $134.00 (median of 23 samples)","price is plausible for this product","at or under the $125.00 ceiling (by $5.01)","the rule asks for no particular discount; this is 10.46% off","quantity 1, no per-customer limit seen","1 x $119.99 = $119.99 fits the $187.51 single-verdict cap ($375.02 left)","never alerted before"],"product_name":"Pokemon TCG: Scarlet & Violet-151 Ultra-Premium Collection","set_code":"SV03.5"},{"product_id":"sv10-destined-rivals-booster-bundle","action":"no_stock","at":1789938360,"source":null,"sku":null,"price_cents":null,"landed_cents":null,"market_cents":null,"discount_pct":null,"quantity":0,"url":"https://examplemart.example.com/p/sv10-destined-rivals-booster-bundle","reasons":["rule: up to $27.99 landed x3","nothing purchasable across 2 listing(s): out_of_stock, no price x1, preorder x1"],"product_name":"Pokemon TCG: Scarlet & Violet-Destined Rivals Booster Bundle","set_code":"SV10"},{"product_id":"sv045-paldean-fates-mini-tin","action":"watch","at":1789938180,"source":"cardbarn","sku":"CA-SV045-PALDEAN-FATES-MINI-TIN","price_cents":749,"landed_cents":1198,"market_cents":null,"discount_pct":null,"quantity":0,"url":"https://cardbarn.example.com/p/sv045-paldean-fates-mini-tin","reasons":["rule: up to $7.99 landed x4","2 of 2 listing(s) purchasable: examplemart $8.99, cardbarn $11.98","the rule allows any source","cheapest is examplemart at $8.99 (landed), shipping $0.00","market reference unusable (no median, only 2 sample(s), the samples are stale): no discount test applied, the $7.99 ceiling decides alone","price is plausible for this product","$8.99 is $1.00 over the $7.99 ceiling"],"product_name":"Pokemon TCG: Scarlet & Violet-Paldean Fates Mini Tin","set_code":"SV04.5"},{"product_id":"sv08-surging-sparks-booster-box","product_name":"Pokemon TCG: Scarlet & Violet-Surging Sparks Booster Box","set_code":"SV08","action":"buy","at":1789927860,"source":"examplemart","sku":"EX-SV08","price_cents":13899,"landed_cents":13899,"market_cents":15310,"discount_pct":9.2162,"quantity":1,"url":"https://examplemart.example.com/p/sv08-surging-sparks-booster-box","reasons":["rule: up to $149.00 landed at 5% off or better","3 of 4 listing(s) purchasable: cardbarn $134.99, examplemart $142.99, hobbyhub $148.49","the rule allows any source","cheapest is cardbarn at $134.99 (landed), shipping $0.00","market reference $152.50 (median of 27 samples)","price is plausible for this product","at or under the $149.00 ceiling (by $14.01)","11.48% off meets the 5% the rule asks for (needs $144.87 or better)","quantity 1, no per-customer limit seen","1 x $134.99 = $134.99 fits the $255.00 single-verdict cap ($510.01 left)","never alerted before"]},{"product_id":"sv07-stellar-crown-elite-trainer-box","product_name":"Pokemon TCG: Scarlet & Violet-Stellar Crown Elite Trainer Box","set_code":"SV07","action":"watch","at":1789921440,"source":"hobbyhub","sku":"HO-SV07","price_cents":1299,"landed_cents":1299,"market_cents":4650,"discount_pct":72.0645,"quantity":0,"url":"https://hobbyhub.example.com/p/sv07-stellar-crown-elite-trainer-box","reasons":["rule: up to $44.99 landed at 10% off or better","2 of 2 listing(s) purchasable: hobbyhub $42.99, examplemart $45.99","the rule allows any source","cheapest is hobbyhub at $42.99 (landed), shipping $0.00","market reference $46.50 (median of 19 samples)","price is plausible for this product","at or under the $44.99 ceiling (by $2.00)","7.55% off is short of the 10% the rule asks for: that wants $41.85 or better"]}]}</script>
+<script>
+/* ===================================================================
+   Jarvis · Pokemon Watch — the page.
+
+   Two modes, chosen at runtime:
+     LIVE  window.JARVIS_POKE_API is set -> GET state / POST rule,
+           budget, pause against it.
+     DEMO  otherwise -> the embedded seeded dataset below the fold of
+           this file. Marked with a badge; never presented as real.
+
+   Money is integer cents end to end (jarvis_poke/contracts.py, "Money
+   is integer cents"). Every amount on screen is formatted from an int
+   by integer arithmetic; no float ever touches money here.
+   =================================================================== */
+(function () {
+  "use strict";
+
+  /* SVG nodes without a namespace URL anywhere in this file: the HTML
+     parser puts everything inside <svg> into the SVG namespace, so we
+     keep one parsed stencil and clone empty elements off it. */
+  var SVG = (function () {
+    var t = document.createElement("template");
+    t.innerHTML = "<svg><path></path><polyline></polyline><circle></circle><line></line></svg>";
+    var root = t.content.firstChild;
+    return function (tag) {
+      return tag === "svg" ? root.cloneNode(false) : root.querySelector(tag).cloneNode(false);
+    };
+  })();
+
+  /* ---------------------------------------------------------- money */
+
+  /** Format integer cents, e.g. -13499 -> "-$134.99". Integer maths only. */
+  function fmtCents(c) {
+    if (c === null || c === undefined || typeof c !== "number" || !isFinite(c)) return "—";
+    var n = Math.trunc(c), neg = n < 0, a = neg ? -n : n;
+    var whole = (a - (a % 100)) / 100, frac = a % 100;
+    return (neg ? "-$" : "$") + whole.toLocaleString("en-US") + "." + String(frac).padStart(2, "0");
+  }
+
+  /** Dollars-with-no-cents, for axis-ish labels. */
+  function fmtDollars(c) {
+    if (typeof c !== "number" || !isFinite(c)) return "—";
+    var n = Math.trunc(c), neg = n < 0, a = neg ? -n : n;
+    var whole = (a - (a % 100)) / 100;
+    return (neg ? "-$" : "$") + whole.toLocaleString("en-US");
+  }
+
+  /** Mirror of contracts.to_cents: "$189.99" -> 18999, or null if unparseable. */
+  function parseCents(text) {
+    var s = String(text == null ? "" : text).trim().replace(/[$,\s]/g, "");
+    if (!s) return null;
+    var neg = false;
+    if (s.charAt(0) === "-") { neg = true; s = s.slice(1); }
+    if (!/^\d+(\.\d{0,2})?$|^\.\d{1,2}$/.test(s)) return null;
+    var parts = s.split("."), whole = parts[0] || "0", frac = (parts[1] || "") + "00";
+    var v = parseInt(whole, 10) * 100 + parseInt(frac.slice(0, 2), 10);
+    if (!isFinite(v)) return null;
+    return neg ? -v : v;
+  }
+
+  /* ----------------------------------------------------------- time */
+
+  function nowSec() {
+    /* In demo mode the dataset's generated_at is "now", so the page reads
+       the same however long after it was built. */
+    if (MODE === "demo" && state && typeof state.generated_at === "number") return state.generated_at;
+    return Date.now() / 1000;
+  }
+  function rel(ts, ref) {
+    if (typeof ts !== "number" || !isFinite(ts) || ts <= 0) return "—";
+    var d = Math.round((ref === undefined ? nowSec() : ref) - ts);
+    var ahead = d < 0; if (ahead) d = -d;
+    var out;
+    if (d < 45) out = ahead ? "under a minute" : "just now";
+    else if (d < 5400) out = Math.round(d / 60) + "m";
+    else if (d < 172800) out = Math.round(d / 3600) + "h";
+    else out = Math.round(d / 86400) + "d";
+    if (out === "just now") return out;
+    return ahead ? "in " + out : out + " ago";
+  }
+  function absTime(ts) {
+    if (typeof ts !== "number" || !isFinite(ts) || ts <= 0) return "";
+    try { return new Date(ts * 1000).toLocaleString(); } catch (e) { return ""; }
+  }
+
+  /* ------------------------------------------------------------ dom */
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = String(text);
+    return n;
+  }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+  function $(id) { return document.getElementById(id); }
+
+  /** Inline SVG icons. No emoji anywhere in this UI. */
+  var PATHS = {
+    refresh: "M3 10a7 7 0 0 1 12-4.9M17 4v4h-4M17 10a7 7 0 0 1-12 4.9M3 16v-4h4",
+    moon: "M16 11.5A6.5 6.5 0 0 1 8.5 4a6.5 6.5 0 1 0 7.5 7.5Z",
+    sun: "M10 3v2M10 15v2M3 10h2M15 10h2M5.2 5.2l1.4 1.4M13.4 13.4l1.4 1.4M14.8 5.2l-1.4 1.4M6.6 13.4l-1.4 1.4M10 7a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z",
+    auto: "M10 3a7 7 0 1 0 0 14Zm0 0a7 7 0 1 1 0 14",
+    chev: "m5 8 5 5 5-5",
+    check: "m4 10.5 4 4 8-9",
+    eye: "M1.8 10S5 4.5 10 4.5 18.2 10 18.2 10 15 15.5 10 15.5 1.8 10 1.8 10Zm8.2 2.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z",
+    pause: "M7 4v12M13 4v12",
+    ban: "M10 3.2a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6ZM5.2 5.2l9.6 9.6",
+    clock: "M10 5v5l3 2M10 3.2a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6Z",
+    out: "M8 4H4.8A.8.8 0 0 0 4 4.8v10.4a.8.8 0 0 0 .8.8h10.4a.8.8 0 0 0 .8-.8V12M11 3h6v6M9 11l7.5-7.5",
+    warn: "M10 3.5 2.8 16h14.4L10 3.5Zm0 4.5v4m0 2.2v.3",
+    err: "M10 3.2a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6ZM10 6.5v4.2m0 2.3v.3"
+  };
+  function icon(name, size) {
+    var svg = SVG("svg");
+    svg.setAttribute("viewBox", "0 0 20 20");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+    if (size) { svg.setAttribute("width", size); svg.setAttribute("height", size); }
+    var p = SVG("path");
+    p.setAttribute("d", PATHS[name] || "");
+    p.setAttribute("stroke", "currentColor");
+    p.setAttribute("stroke-width", "1.7");
+    p.setAttribute("stroke-linecap", "round");
+    p.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(p);
+    return svg;
+  }
+
+  /* -------------------------------------------------------- vocabulary */
+
+  var ACTIONS = {
+    buy:      { label: "Buy",      icon: "check", blurb: "clears every rule" },
+    watch:    { label: "Watch",    icon: "eye",   blurb: "in stock, fails a rule" },
+    no_stock: { label: "No stock", icon: "pause", blurb: "nothing purchasable" },
+    skip:     { label: "Skip",     icon: "ban",   blurb: "not acting" }
+  };
+  function actionOf(v) {
+    var a = v && v.action ? String(v.action) : "skip";
+    return Object.prototype.hasOwnProperty.call(ACTIONS, a) ? a : "skip";
+  }
+  var STOCK_WORDS = {
+    in_stock: "in stock", out_of_stock: "out of stock", preorder: "preorder",
+    limited: "limited", unknown: "unknown"
+  };
+  var SOURCE_STATES = {
+    ok: "polling normally", backoff: "backing off after errors",
+    paused: "paused", disallowed: "robots.txt disallows", error: "erroring"
+  };
+
+  /* --------------------------------------------------------- the API */
+
+  var rawApi = (typeof window !== "undefined") ? window.JARVIS_POKE_API : null;
+  var api = null;
+  if (rawApi && typeof rawApi === "string") api = { base: rawApi };
+  else if (rawApi && typeof rawApi === "object") api = rawApi;
+  var MODE = api ? "live" : "demo";
+  var REFRESH_MS = Math.max(15, (api && +api.refresh_s) || 60) * 1000;
+
+  function apiUrl(path) {
+    var b = String((api && api.base) || "").replace(/\/+$/, "");
+    return b ? b + "/" + path : path;
+  }
+  function withTimeout(ms) {
+    if (typeof AbortController === "undefined") return { signal: undefined, done: function () {} };
+    var c = new AbortController(), t = setTimeout(function () { c.abort(); }, ms);
+    return { signal: c.signal, done: function () { clearTimeout(t); } };
+  }
+  async function getState() {
+    if (api && typeof api.getState === "function") return await api.getState();
+    var t = withTimeout(12000);
+    try {
+      var r = await (api.fetch || window.fetch).call(window, apiUrl("state"), {
+        method: "GET",
+        headers: Object.assign({ "Accept": "application/json" }, (api && api.headers) || {}),
+        credentials: (api && api.credentials) || "same-origin",
+        signal: t.signal
+      });
+      if (!r.ok) throw new Error("the API answered " + r.status + " " + (r.statusText || ""));
+      return await r.json();
+    } finally { t.done(); }
+  }
+  async function post(path, body) {
+    if (api && typeof api.post === "function") return await api.post(path, body);
+    var t = withTimeout(12000);
+    try {
+      var r = await (api.fetch || window.fetch).call(window, apiUrl(path), {
+        method: "POST",
+        headers: Object.assign({ "Content-Type": "application/json", "Accept": "application/json" }, (api && api.headers) || {}),
+        credentials: (api && api.credentials) || "same-origin",
+        body: JSON.stringify(body),
+        signal: t.signal
+      });
+      if (!r.ok) throw new Error("the API answered " + r.status + " " + (r.statusText || ""));
+      var text = await r.text();
+      return text ? JSON.parse(text) : null;
+    } finally { t.done(); }
+  }
+
+  /* -------------------------------------------------------- page state */
+
+  var state = null;          // the last state we successfully loaded
+  var loadedAt = 0;          // wall clock seconds when we loaded it
+  var status = "loading";    // loading | ready | error
+  var lastError = "";
+  var expanded = Object.create(null);   // product_id -> true
+  var dirty = Object.create(null);      // product_id -> true (an edit in progress)
+  var filter = "all";
+  var showAllRecent = false;
+
+  function anyDirty() { for (var k in dirty) if (dirty[k]) return true; return false; }
+
+  function loadDemo() {
+    var node = $("jarvis-demo-state");
+    try { return JSON.parse(node.textContent); }
+    catch (e) { return { generated_at: 0, budget: { total_cents: 0, spent_cents: 0, reserved_cents: 0, remaining_cents: 0, window_days: 30 }, watch: [], sources: [], recent: [] }; }
+  }
+
+  /* ------------------------------------------------------------ toast */
+
+  var toastTimer = 0;
+  function toast(msg) {
+    var t = $("toast");
+    t.textContent = msg;
+    t.setAttribute("data-show", "true");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.setAttribute("data-show", "false"); }, 4200);
+  }
+
+  /* --------------------------------------------------------- sparkline */
+
+  /**
+   * Inline SVG sparkline over [[t, cents|null], ...].
+   * A bucket with no reading is a gap: the line breaks. It is never drawn
+   * as zero, because "nobody had it" and "it cost nothing" are different
+   * things and only one of them is true.
+   */
+  function sparkline(trend, median, name) {
+    var W = 104, H = 30, PAD = 3;
+    var svg = SVG("svg");
+    svg.setAttribute("class", "spark");
+    svg.setAttribute("width", W);
+    svg.setAttribute("height", H);
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.setAttribute("role", "img");
+
+    var pts = Array.isArray(trend) ? trend : [];
+    var vals = [], i, v;
+    for (i = 0; i < pts.length; i++) {
+      v = pts[i] && pts[i][1];
+      if (typeof v === "number" && isFinite(v)) vals.push(v);
+    }
+    if (!vals.length) {
+      svg.setAttribute("aria-label", "No price history for " + name + " yet.");
+      var none = SVG("line");
+      none.setAttribute("x1", PAD); none.setAttribute("x2", W - PAD);
+      none.setAttribute("y1", H / 2); none.setAttribute("y2", H / 2);
+      none.setAttribute("stroke", "var(--line)");
+      none.setAttribute("stroke-width", "1.5");
+      none.setAttribute("stroke-dasharray", "2 3");
+      svg.appendChild(none);
+      return svg;
+    }
+    var dataLo = Math.min.apply(null, vals), dataHi = Math.max.apply(null, vals);
+    var lo = dataLo, hi = dataHi;   /* widened only so the median guide fits */
+    if (typeof median === "number" && isFinite(median)) { lo = Math.min(lo, median); hi = Math.max(hi, median); }
+    var span = hi - lo || 1;
+    var n = Math.max(pts.length, 2);
+    function X(idx) { return PAD + (W - 2 * PAD) * (idx / (n - 1)); }
+    function Y(cents) { return H - PAD - (H - 2 * PAD) * ((cents - lo) / span); }
+
+    if (typeof median === "number" && isFinite(median)) {
+      var m = SVG("line");
+      m.setAttribute("x1", PAD); m.setAttribute("x2", W - PAD);
+      m.setAttribute("y1", Y(median)); m.setAttribute("y2", Y(median));
+      m.setAttribute("stroke", "var(--median)");
+      m.setAttribute("stroke-width", "1");
+      m.setAttribute("stroke-dasharray", "3 3");
+      svg.appendChild(m);
+    }
+
+    var run = [], gaps = 0;
+    function flush() {
+      if (run.length === 1) {
+        var c = SVG("circle");
+        c.setAttribute("cx", run[0][0]); c.setAttribute("cy", run[0][1]); c.setAttribute("r", "1.7");
+        c.setAttribute("fill", "var(--spark)");
+        svg.appendChild(c);
+      } else if (run.length > 1) {
+        var pl = SVG("polyline");
+        pl.setAttribute("points", run.map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" "));
+        pl.setAttribute("fill", "none");
+        pl.setAttribute("stroke", "var(--spark)");
+        pl.setAttribute("stroke-width", "1.6");
+        pl.setAttribute("stroke-linecap", "round");
+        pl.setAttribute("stroke-linejoin", "round");
+        svg.appendChild(pl);
+      }
+      run = [];
+    }
+    var lastIdx = -1;
+    for (i = 0; i < pts.length; i++) {
+      v = pts[i] && pts[i][1];
+      if (typeof v === "number" && isFinite(v)) { run.push([X(i), Y(v)]); lastIdx = i; }
+      else { gaps++; flush(); }
+    }
+    flush();
+    if (lastIdx >= 0) {
+      var dot = SVG("circle");
+      dot.setAttribute("cx", X(lastIdx));
+      dot.setAttribute("cy", Y(pts[lastIdx][1]));
+      dot.setAttribute("r", "2.4");
+      dot.setAttribute("fill", "var(--spark-hi)");
+      svg.appendChild(dot);
+    }
+
+    var firstTs = pts.length ? pts[0][0] : 0, lastTs = pts.length ? pts[pts.length - 1][0] : 0;
+    var days = (typeof firstTs === "number" && typeof lastTs === "number" && lastTs > firstTs)
+      ? Math.max(1, Math.round((lastTs - firstTs) / 86400)) : 0;
+    var latest = pts[lastIdx][1];
+    var label = "Price trend for " + name + (days ? " over " + days + " days" : "") + ": "
+      + vals.length + " readings between " + fmtCents(dataLo) + " and " + fmtCents(dataHi)
+      + ", latest " + fmtCents(latest)
+      + (gaps ? ", " + gaps + " interval" + (gaps === 1 ? "" : "s") + " with no reading" : "")
+      + ".";
+    svg.setAttribute("aria-label", label);
+    return svg;
+  }
+
+  /* -------------------------------------------------------- small bits */
+
+  function pill(action, small) {
+    var meta = ACTIONS[action] || ACTIONS.skip;
+    var p = el("span", "pill" + (small ? " sm" : ""));
+    p.setAttribute("data-action", action);
+    p.appendChild(icon(meta.icon));
+    p.appendChild(el("span", null, meta.label));   /* never colour alone */
+    return p;
+  }
+
+  /**
+   * The signed distance of the price from the market median.
+   * The engine reports discount_pct positive when the price is *under*
+   * the market; on screen we show the price's own signed movement, so
+   * "-11.5%" means eleven and a half per cent cheaper than the median.
+   */
+  function deltaEl(item) {
+    var v = item.verdict || {}, m = item.market || {}, best = item.best || null;
+    var pct = null;
+    if (typeof v.discount_pct === "number" && isFinite(v.discount_pct)) pct = -v.discount_pct;
+    else if (best && typeof best.landed_cents === "number" && typeof m.median_cents === "number" && m.median_cents > 0) {
+      pct = (best.landed_cents - m.median_cents) * 100 / m.median_cents;
+    }
+    if (pct === null) {
+      var q = el("span", "delta flat", "no median");
+      q.title = "No usable market reference: no discount test was applied.";
+      return q;
+    }
+    var rounded = Math.round(pct * 10) / 10;
+    var cls = rounded < -0.05 ? "good" : (rounded > 0.05 ? "bad" : "flat");
+    var sign = rounded > 0 ? "+" : (rounded < 0 ? "−" : "");
+    var d = el("span", "delta num " + cls, sign + Math.abs(rounded).toFixed(1) + "%");
+    d.title = rounded < 0 ? Math.abs(rounded).toFixed(1) + "% below the market median"
+      : rounded > 0 ? rounded.toFixed(1) + "% above the market median" : "level with the market median";
+    d.setAttribute("aria-label", "vs median: " + d.title);
+    return d;
+  }
+
+  /** Every product here is a Pokemon product, so the prefix is noise on a
+      phone row. The full name stays in the title attribute, in the panel
+      and in the sparkline's label. */
+  function shortName(name) {
+    return String(name || "").replace(/^Pok[e\u00e9]mon TCG:\s*/i, "");
+  }
+
+  function safeUrl(u) {
+    return (typeof u === "string" && /^https?:\/\//i.test(u)) ? u : "";
+  }
+
+  /* ------------------------------------------------------------ header */
+
+  function renderHeader() {
+    var badge = $("mode-badge");
+    clear(badge);
+    if (MODE === "demo") {
+      var bdg = el("span", "badge-demo");
+      bdg.appendChild(icon("warn"));
+      bdg.appendChild(el("span", null, "Demo"));
+      bdg.title = "Demo data: no API is attached, so these prices are a fixed sample dataset, not live readings.";
+      bdg.setAttribute("aria-label", bdg.title);
+      badge.appendChild(bdg);
+    }
+    $("foot-mode").textContent = MODE === "demo"
+      ? "Demo mode: window.JARVIS_POKE_API is not set, so the page is showing its built-in sample dataset. Nothing here was fetched from anywhere, the numbers are invented, and the retailers (ExampleMart, CardBarn, HobbyHub, BigBoxCo) do not exist."
+      : "Live mode: reading from the Jarvis API. This page talks only to that API; the polling of any source, with its interval, robots.txt check and backoff, happens in the service, not here.";
+
+    var b = state && state.budget ? state.budget : null;
+    var total = b && typeof b.total_cents === "number" ? b.total_cents : 0;
+    var spent = b && typeof b.spent_cents === "number" ? b.spent_cents : 0;
+    var held = b && typeof b.reserved_cents === "number" ? b.reserved_cents : 0;
+    var remaining = b && typeof b.remaining_cents === "number" ? b.remaining_cents : Math.max(0, total - spent - held);
+    $("budget-remaining").textContent = b ? fmtCents(remaining) : "—";
+    $("budget-of").textContent = b ? "left of " + fmtCents(total) : "";
+    $("budget-spent").textContent = b ? fmtCents(spent) : "—";
+    /* Held money is neither spent nor free: it is promised to a BUY alert
+       the owner has not answered. Leaving it out made the meter and the
+       "left of" line disagree, because remaining is net of it and spent
+       is not. */
+    $("budget-held").textContent = held > 0 ? fmtCents(held) + " held for alerts you have not answered" : "";
+    $("budget-window").textContent = b && b.window_days ? "rolling " + b.window_days + "-day window" : "";
+    var committed = spent + held;
+    var pctUsed = total > 0 ? Math.min(100, Math.round(committed * 1000 / total) / 10) : 0;
+    var meter = $("budget-meter");
+    meter.firstChild.style.width = pctUsed + "%";
+    meter.setAttribute("data-full", String(total > 0 && remaining === 0));
+    meter.setAttribute("aria-valuenow", String(pctUsed));
+    meter.setAttribute("aria-valuetext", fmtCents(spent) + " committed and " + fmtCents(held) + " held, of " + fmtCents(total) + "; " + fmtCents(remaining) + " left");
+    $("compact-budget").textContent = b ? fmtCents(remaining) + " left of " + fmtCents(total) : "";
+    var u = $("updated-at");
+    if (state && typeof state.generated_at === "number" && state.generated_at > 0) {
+      u.textContent = MODE === "demo" ? "sample snapshot" : "updated " + rel(state.generated_at, Date.now() / 1000);
+      u.title = absTime(state.generated_at);
+    } else { u.textContent = ""; }
+  }
+
+  /* ----------------------------------------------------------- banners */
+
+  function renderBanner() {
+    var slot = clear($("banner-slot"));
+    if (status === "error" && state) {
+      var w = el("div", "banner err");
+      w.appendChild(icon("err"));
+      w.appendChild(el("span", null, "Could not refresh: " + lastError + " Showing the last good snapshot, loaded " + rel(loadedAt, Date.now() / 1000) + "."));
+      var r = el("button", "btn", "Retry"); r.type = "button";
+      r.addEventListener("click", function () { load(true); });
+      w.appendChild(r);
+      slot.appendChild(w);
+    }
+  }
+
+  /* --------------------------------------------------------- watchlist */
+
+  function renderFilters(items) {
+    var box = clear($("filters"));
+    var counts = { all: items.length, buy: 0, watch: 0, no_stock: 0, skip: 0 };
+    items.forEach(function (it) { counts[actionOf(it.verdict)]++; });
+    [["all", "All"], ["buy", "Buy"], ["watch", "Watch"], ["no_stock", "No stock"], ["skip", "Skip"]].forEach(function (pair) {
+      var key = pair[0];
+      var b = el("button", "chip"); b.type = "button";
+      b.setAttribute("aria-pressed", String(filter === key));
+      b.appendChild(el("span", null, pair[1]));
+      b.appendChild(el("span", "n", counts[key]));
+      b.addEventListener("click", function () { filter = key; render(); });
+      box.appendChild(b);
+    });
+  }
+
+  function offerRow(o, isBest) {
+    var row = el("div", "offer");
+    if (isBest) row.setAttribute("data-best", "true");
+    var who = el("div", "who", String(o.source || "unknown"));
+    var st = el("span", "stock", STOCK_WORDS[o.stock] || String(o.stock || "unknown"));
+    who.appendChild(st);
+    row.appendChild(who);
+    var landed = (typeof o.landed_cents === "number") ? o.landed_cents
+      : (typeof o.price_cents === "number" ? o.price_cents + (o.shipping_cents || 0) : null);
+    var amt = el("div", "amt num" + (landed === null ? " none" : ""), landed === null ? "no price" : fmtCents(landed));
+    row.appendChild(amt);
+    row.appendChild(el("div", "when", o.at ? "seen " + rel(o.at) : ""));
+    var parts = "";
+    if (typeof o.price_cents === "number") {
+      parts = fmtCents(o.price_cents) + (o.shipping_cents ? " + " + fmtCents(o.shipping_cents) + " ship" : " + free ship");
+    }
+    row.appendChild(el("div", "parts num", parts));
+    return row;
+  }
+
+  function ruleEditor(item) {
+    var pid = item.product.id, rule = item.rule || {};
+    var form = el("form", "ruleform");
+    form.setAttribute("aria-label", "Rule for " + item.product.name);
+
+    var fields = el("div", "fields");
+
+    var fMax = el("div", "field");
+    var lMax = el("label", null, "Max landed price ($)"); lMax.htmlFor = "max-" + pid;
+    var iMax = el("input"); iMax.type = "text"; iMax.id = "max-" + pid; iMax.inputMode = "decimal";
+    iMax.autocomplete = "off"; iMax.spellcheck = false;
+    iMax.value = typeof rule.max_price_cents === "number" ? (fmtCents(rule.max_price_cents).replace("$", "")) : "";
+    var hMax = el("span", "hint", "A hard ceiling, shipping included.");
+    fMax.appendChild(lMax); fMax.appendChild(iMax); fMax.appendChild(hMax);
+
+    var fQty = el("div", "field");
+    var lQty = el("label", null, "Quantity"); lQty.htmlFor = "qty-" + pid;
+    var iQty = el("input"); iQty.type = "number"; iQty.id = "qty-" + pid; iQty.min = "1"; iQty.step = "1";
+    iQty.inputMode = "numeric";
+    iQty.value = typeof rule.quantity === "number" ? String(rule.quantity) : "1";
+    var hQty = el("span", "hint", "At least 1.");
+    fQty.appendChild(lQty); fQty.appendChild(iQty); fQty.appendChild(hQty);
+
+    var fDisc = el("div", "field");
+    var lDisc = el("label", null, "Min discount (%)"); lDisc.htmlFor = "disc-" + pid;
+    var iDisc = el("input"); iDisc.type = "number"; iDisc.id = "disc-" + pid; iDisc.min = "0"; iDisc.max = "99.9"; iDisc.step = "0.5";
+    iDisc.inputMode = "decimal";
+    iDisc.value = typeof rule.min_discount_pct === "number" ? String(rule.min_discount_pct) : "0";
+    var hDisc = el("span", "hint", "Measured against the market median, not MSRP.");
+    fDisc.appendChild(lDisc); fDisc.appendChild(iDisc); fDisc.appendChild(hDisc);
+
+    fields.appendChild(fMax); fields.appendChild(fQty); fields.appendChild(fDisc);
+    form.appendChild(fields);
+
+    var actions = el("div", "actions");
+    var sw = el("button", "switch"); sw.type = "button";
+    sw.setAttribute("role", "switch");
+    var enabled = rule.enabled !== false;
+    sw.setAttribute("aria-checked", String(enabled));
+    sw.appendChild(el("span", "track"));
+    sw.appendChild(el("span", null, "Rule enabled"));
+    sw.addEventListener("click", function () {
+      enabled = sw.getAttribute("aria-checked") !== "true";
+      sw.setAttribute("aria-checked", String(enabled));
+      dirty[pid] = true;
+    });
+    actions.appendChild(sw);
+
+    var save = el("button", "btn primary", "Save rule"); save.type = "submit";
+    actions.appendChild(save);
+    var msg = el("span", "hint");
+    actions.appendChild(msg);
+    form.appendChild(actions);
+
+    [iMax, iQty, iDisc].forEach(function (i) {
+      i.addEventListener("input", function () { dirty[pid] = true; i.removeAttribute("aria-invalid"); msg.className = "hint"; msg.textContent = ""; });
+    });
+
+    form.addEventListener("submit", async function (ev) {
+      ev.preventDefault();
+      var cents = parseCents(iMax.value);
+      var qty = parseInt(iQty.value, 10);
+      var disc = parseFloat(iDisc.value);
+      msg.className = "hint";
+      function bad(input, why) {
+        input.setAttribute("aria-invalid", "true");
+        msg.className = "hint bad"; msg.textContent = why;
+        input.focus();
+      }
+      if (cents === null || cents <= 0) return bad(iMax, "Max price must be a positive amount, like 149.00.");
+      if (!isFinite(qty) || qty < 1) return bad(iQty, "Quantity must be at least 1.");
+      if (!isFinite(disc) || disc < 0 || disc >= 100) return bad(iDisc, "Min discount must be at least 0 and under 100.");
+      var payload = {
+        product_id: pid, max_price_cents: cents, quantity: qty,
+        min_discount_pct: disc, enabled: enabled
+      };
+      save.disabled = true; msg.textContent = "Saving…";
+      try {
+        if (MODE === "live") {
+          await post("rule", payload);
+          msg.textContent = "Saved.";
+          dirty[pid] = false;
+          await load(true);
+          toast("Rule saved for " + item.product.set_code + ".");
+        } else {
+          item.rule = Object.assign({}, rule, {
+            max_price_cents: cents, quantity: qty, min_discount_pct: disc, enabled: enabled
+          });
+          dirty[pid] = false;
+          msg.textContent = "";
+          render();
+          toast("Demo mode: the rule changed in this page only, nothing was sent anywhere.");
+        }
+      } catch (e) {
+        msg.className = "hint bad";
+        msg.textContent = "Could not save: " + (e && e.message ? e.message : String(e));
+      } finally { save.disabled = false; }
+    });
+
+    return form;
+  }
+
+  function panelFor(item) {
+    var pid = item.product.id;
+    var panel = el("div", "panel");
+    panel.id = "panel-" + pid;
+
+    var v = item.verdict || {};
+    var why = el("div", "block");
+    var h = el("h3", null, "Why " + (ACTIONS[actionOf(v)] || ACTIONS.skip).label.toLowerCase());
+    why.appendChild(h);
+    var ul = el("ul", "reasons");
+    var reasons = Array.isArray(v.reasons) ? v.reasons : [];
+    if (!reasons.length) ul.appendChild(el("li", null, "The engine recorded no reasons for this decision, which is itself worth knowing."));
+    reasons.forEach(function (r) { ul.appendChild(el("li", null, String(r))); });
+    why.appendChild(ul);
+    if (typeof v.at === "number" && v.at > 0) {
+      var when = el("p", "note", "Decided " + rel(v.at) + ".");
+      when.title = absTime(v.at);
+      when.style.marginTop = "var(--sp-2)";
+      why.appendChild(when);
+    }
+    panel.appendChild(why);
+
+    var offers = Array.isArray(item.offers) ? item.offers.slice() : (item.best ? [item.best] : []);
+    var byPrice = offers.slice().sort(function (a, b) {
+      var la = typeof a.landed_cents === "number" ? a.landed_cents : Infinity;
+      var lb = typeof b.landed_cents === "number" ? b.landed_cents : Infinity;
+      return la - lb || String(a.source).localeCompare(String(b.source));
+    });
+    var pblock = el("div", "block");
+    pblock.appendChild(el("h3", null, "Prices by source"));
+    if (!byPrice.length) {
+      pblock.appendChild(el("p", "note", "No listing has been read for this product yet."));
+    } else {
+      var list = el("div", "offers");
+      byPrice.forEach(function (o) {
+        list.appendChild(offerRow(o, item.best && o.source === item.best.source && o.sku === item.best.sku));
+      });
+      pblock.appendChild(list);
+      if (!Array.isArray(item.offers)) {
+        pblock.appendChild(el("p", "note", "Only the best listing was supplied for this product."));
+      }
+    }
+    var m = item.market || {};
+    var mbits = [];
+    if (typeof m.median_cents === "number") mbits.push("median " + fmtCents(m.median_cents));
+    if (typeof m.p25_cents === "number") mbits.push("p25 " + fmtCents(m.p25_cents));
+    if (typeof m.low_cents === "number") mbits.push("low " + fmtCents(m.low_cents));
+    if (typeof m.samples === "number") mbits.push(m.samples + " sample" + (m.samples === 1 ? "" : "s"));
+    if (m.stale) mbits.push("stale, so no discount test was applied");
+    if (typeof item.product.msrp_cents === "number") mbits.push("MSRP " + fmtCents(item.product.msrp_cents));
+    if (mbits.length) {
+      var mp = el("p", "note", "Market: " + mbits.join(" · "));
+      mp.style.marginTop = "var(--sp-2)";
+      pblock.appendChild(mp);
+    }
+    panel.appendChild(pblock);
+
+    var rblock = el("div", "block");
+    rblock.appendChild(el("h3", null, "Rule"));
+    rblock.appendChild(ruleEditor(item));
+    panel.appendChild(rblock);
+
+    var url = safeUrl((item.best && item.best.url) || v.url || "");
+    var hand = el("div", "handoff block");
+    if (url) {
+      var a = el("a", "gotolink");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.appendChild(el("span", null, "Open product page"));
+      a.appendChild(icon("out"));
+      a.setAttribute("aria-label", "Open the product page for " + item.product.name + " at " + (item.best && item.best.source ? item.best.source : "the retailer") + " in a new tab");
+      hand.appendChild(a);
+      var host = url.replace(/^https?:\/\//i, "").split("/")[0];
+      hand.appendChild(el("p", "disclaim", "Opens " + host + " in a new tab. Jarvis stops here: it does not add to a cart, does not place an order, and holds no payment details. You buy it yourself, or you do not."));
+    } else {
+      hand.appendChild(el("p", "disclaim", "No listing link is on file for this product yet, so there is nowhere to hand you to."));
+    }
+    panel.appendChild(hand);
+    return panel;
+  }
+
+  function rowFor(item) {
+    var pid = item.product.id;
+    var v = item.verdict || {};
+    var action = actionOf(v);
+    var li = el("li", "row");
+    li.setAttribute("data-action", action);
+
+    var head = el("button", "rowhead");
+    head.type = "button";
+    head.id = "head-" + pid;
+    head.setAttribute("aria-expanded", String(!!expanded[pid]));
+    head.setAttribute("aria-controls", "panel-" + pid);
+
+    var title = el("div", "title");
+    var nameEl = el("div", "name", shortName(item.product.name));
+    nameEl.title = item.product.name;   /* the full name is never lost */
+    title.appendChild(nameEl);
+    var sub = item.product.set_code + " · " + String(item.product.kind || "").replace(/_/g, " ");
+    if (item.rule && item.rule.enabled === false) sub += " · rule off";
+    title.appendChild(el("div", "sub", sub));
+    head.appendChild(title);
+
+    var figures = el("div", "figures");
+    var best = item.best;
+    if (best && typeof best.landed_cents === "number") {
+      /* contracts.Rule.include_shipping: when a rule is scored on the shelf
+         price, saying "landed" would be a small lie, so it does not. */
+      var basis = (item.rule && item.rule.include_shipping === false) ? "price" : "landed";
+      var p = el("span", "price num", fmtCents(best.landed_cents));
+      var small = el("small", null, basis + " · " + (best.source || "?"));
+      p.appendChild(small);
+      figures.appendChild(p);
+    } else {
+      figures.appendChild(el("span", "price none", action === "no_stock" ? "no stock" : "no price"));
+    }
+    var m = item.market || {};
+    figures.appendChild(el("span", "med num", typeof m.median_cents === "number" ? "med " + fmtCents(m.median_cents) : "med —"));
+    figures.appendChild(deltaEl(item));
+
+    head.appendChild(figures);
+
+    var cell = el("div", "pillcell");
+    cell.appendChild(pill(action));
+    cell.appendChild(sparkline(item.trend, m.median_cents, item.product.name));
+    var chev = el("span", "chev");
+    chev.appendChild(icon("chev"));
+    cell.appendChild(chev);
+    head.appendChild(cell);
+
+    head.addEventListener("click", function () {
+      if (expanded[pid]) { delete expanded[pid]; delete dirty[pid]; } else { expanded[pid] = true; }
+      render();
+      var again = document.getElementById("head-" + pid);
+      if (again) again.focus();
+    });
+
+    li.appendChild(head);
+    if (expanded[pid]) li.appendChild(panelFor(item));
+    return li;
+  }
+
+  function renderWatch() {
+    var slot = clear($("watch-slot"));
+    slot.setAttribute("aria-busy", String(status === "loading"));
+
+    if (status === "loading" && !state) {
+      var sk = el("div", "skeleton");
+      for (var i = 0; i < 4; i++) sk.appendChild(el("div", "sk"));
+      slot.appendChild(sk);
+      $("watch-count").textContent = "loading…";
+      clear($("filters"));
+      return;
+    }
+    if (status === "error" && !state) {
+      var box = el("div", "card state-box");
+      box.appendChild(el("h3", null, "Cannot reach the Jarvis API"));
+      box.appendChild(el("p", null, lastError + " The watcher may still be running; this page just cannot see it."));
+      var acts = el("div", "actions");
+      var again = el("button", "btn primary", "Try again"); again.type = "button";
+      again.addEventListener("click", function () { load(true); });
+      acts.appendChild(again);
+      box.appendChild(acts);
+      slot.appendChild(box);
+      $("watch-count").textContent = "";
+      clear($("filters"));
+      return;
+    }
+
+    var items = (state && Array.isArray(state.watch) ? state.watch : []).filter(function (it) {
+      return it && it.product && it.product.id;
+    });
+    renderFilters(items);
+    $("watch-count").textContent = items.length ? items.length + " watched" : "";
+
+    if (!items.length) {
+      var empty = el("div", "card state-box");
+      empty.appendChild(el("h3", null, "Nothing on the watchlist"));
+      empty.appendChild(el("p", null, "Add a product and a rule — what you would pay, how many, and how far under the market it has to be — and this page starts telling you when to act and why."));
+      slot.appendChild(empty);
+      return;
+    }
+
+    var order = { buy: 0, watch: 1, no_stock: 2, skip: 3 };
+    var shown = items.filter(function (it) { return filter === "all" || actionOf(it.verdict) === filter; });
+    shown.sort(function (a, b) {
+      var d = order[actionOf(a.verdict)] - order[actionOf(b.verdict)];
+      if (d) return d;
+      return String(a.product.name).localeCompare(String(b.product.name));
+    });
+
+    if (!shown.length) {
+      var none = el("div", "card state-box");
+      none.appendChild(el("h3", null, "Nothing decided " + (ACTIONS[filter] ? ACTIONS[filter].label.toLowerCase() : filter)));
+      none.appendChild(el("p", null, "No product on the watchlist currently has that decision. Pick another filter."));
+      slot.appendChild(none);
+      return;
+    }
+
+    var ul = el("ul", "rows");
+    shown.forEach(function (it) { ul.appendChild(rowFor(it)); });
+    slot.appendChild(ul);
+  }
+
+  /* ----------------------------------------------------------- sources */
+
+  function sourceCard(s) {
+    var card = el("div", "card src");
+    var st = String(s.state || "ok");
+    if (!Object.prototype.hasOwnProperty.call(SOURCE_STATES, st)) st = "ok";
+    card.setAttribute("data-state", st);
+
+    var who = el("div", "who");
+    who.appendChild(el("span", "dot"));
+    who.appendChild(el("span", null, s.name || s.id));
+    card.appendChild(who);
+
+    var bits = [SOURCE_STATES[st]];
+    if (st === "paused" && s.paused_until) bits.push("resumes " + rel(s.paused_until));
+    else if (typeof s.next_due_at === "number" && s.next_due_at > 0) bits.push("next poll " + rel(s.next_due_at));
+    if (s.errors) bits.push(s.errors + " error" + (s.errors === 1 ? "" : "s") + " in a row");
+    if (typeof s.min_interval_s === "number") bits.push("min " + Math.round(s.min_interval_s) + "s apart");
+    if (s.robots_allows === false) bits.push("robots.txt disallows: never polled");
+    var meta = el("div", "meta", bits.join(" · "));
+    if (s.last_reason) meta.title = String(s.last_reason);
+    card.appendChild(meta);
+
+    var wrap = el("div", "sw");
+    var paused = st === "paused" || !!s.paused;
+    var sw = el("button", "switch"); sw.type = "button";
+    sw.setAttribute("role", "switch");
+    sw.setAttribute("aria-checked", String(!paused));
+    sw.setAttribute("aria-label", "Polling " + (s.name || s.id));
+    sw.appendChild(el("span", "track"));
+    sw.appendChild(el("span", "vh", paused ? "paused" : "polling"));
+    sw.addEventListener("click", async function () {
+      var wantPaused = !paused;
+      sw.setAttribute("aria-checked", String(!wantPaused));
+      try {
+        if (MODE === "live") {
+          await post("pause", { source_id: s.id, paused: wantPaused });
+          toast((wantPaused ? "Paused " : "Resumed ") + (s.name || s.id) + ".");
+          await load(true);
+        } else {
+          s.paused = wantPaused;
+          s.state = wantPaused ? "paused" : "ok";
+          s.paused_until = wantPaused ? nowSec() + 3600 : 0;
+          render();
+          toast("Demo mode: " + (s.name || s.id) + " is " + (wantPaused ? "paused" : "polling") + " in this page only.");
+        }
+      } catch (e) {
+        sw.setAttribute("aria-checked", String(!paused));
+        toast("Could not change " + (s.name || s.id) + ": " + (e && e.message ? e.message : String(e)));
+      }
+    });
+    wrap.appendChild(sw);
+    card.appendChild(wrap);
+    return card;
+  }
+
+  function renderSources() {
+    var slot = clear($("sources-slot"));
+    var list = state && Array.isArray(state.sources) ? state.sources : [];
+    $("sources-count").textContent = list.length ? list.length + " configured" : "";
+    if (!list.length) {
+      var box = el("div", "card state-box");
+      box.appendChild(el("h3", null, "No sources configured"));
+      box.appendChild(el("p", null, "Nothing is being polled, so nothing can be decided. Add a source with its poll interval and a robots.txt check in the Jarvis service."));
+      slot.appendChild(box);
+      return;
+    }
+    list.forEach(function (s) { slot.appendChild(sourceCard(s)); });
+  }
+
+  /* ------------------------------------------------------------ recent */
+
+  function recentItem(v) {
+    var li = el("li");
+    var d = el("details");
+    var s = el("summary");
+    var action = actionOf(v);
+    var when = el("span", "when num", rel(v.at));
+    when.title = absTime(v.at);
+    s.appendChild(when);
+    var head = el("div", "head");
+    head.appendChild(pill(action, true));
+    head.appendChild(el("span", "what", shortName(v.product_name) || v.product_id || "unknown product"));
+    if (typeof v.landed_cents === "number") {
+      head.appendChild(el("span", "med num", fmtCents(v.landed_cents) + (v.source ? " at " + v.source : "")));
+    }
+    s.appendChild(head);
+    var reasons = Array.isArray(v.reasons) ? v.reasons : [];
+    s.appendChild(el("div", "why", reasons.length ? String(reasons[reasons.length - 1]) : "no reason recorded"));
+    d.appendChild(s);
+    var full = el("div", "full");
+    var ul = el("ul", "reasons");
+    reasons.forEach(function (r) { ul.appendChild(el("li", null, String(r))); });
+    if (!reasons.length) ul.appendChild(el("li", null, "No reasons were recorded with this decision."));
+    full.appendChild(ul);
+    var url = safeUrl(v.url);
+    if (url) {
+      var a = el("a", "linkbtn");
+      a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+      a.textContent = "Open the listing this decision was about";
+      a.style.display = "inline-block";
+      full.appendChild(a);
+    }
+    d.appendChild(full);
+    li.appendChild(d);
+    return li;
+  }
+
+  function renderRecent() {
+    var slot = clear($("recent-slot"));
+    var list = (state && Array.isArray(state.recent) ? state.recent : []).slice();
+    list.sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
+    $("recent-count").textContent = list.length ? list.length + " logged" : "";
+    if (!list.length) {
+      var box = el("div", "card state-box");
+      box.appendChild(el("h3", null, "No decisions yet"));
+      box.appendChild(el("p", null, "Once the watcher has polled a source and scored a listing, every verdict lands here with the reasons it was given."));
+      slot.appendChild(box);
+      return;
+    }
+    var cap = showAllRecent ? list.length : 8;
+    var ul = el("ul", "log");
+    list.slice(0, cap).forEach(function (v) { ul.appendChild(recentItem(v)); });
+    slot.appendChild(ul);
+    if (list.length > 8) {
+      var more = el("button", "linkbtn", showAllRecent ? "Show fewer" : "Show all " + list.length);
+      more.type = "button";
+      more.addEventListener("click", function () { showAllRecent = !showAllRecent; render(); });
+      slot.appendChild(more);
+    }
+  }
+
+  /* ------------------------------------------------------------ render */
+
+  function render() {
+    renderHeader();
+    renderBanner();
+    renderWatch();
+    renderSources();
+    renderRecent();
+  }
+
+  /* -------------------------------------------------------------- load */
+
+  async function load(force) {
+    if (MODE === "demo") {
+      if (!state) { state = loadDemo(); loadedAt = Date.now() / 1000; }
+      status = "ready";
+      render();
+      return;
+    }
+    if (!force && anyDirty()) return;      /* never clobber an open edit */
+    if (!state) { status = "loading"; render(); }
+    try {
+      var fresh = await getState();
+      if (!fresh || typeof fresh !== "object") throw new Error("the API returned no state object.");
+      state = fresh;
+      loadedAt = Date.now() / 1000;
+      status = "ready";
+      lastError = "";
+    } catch (e) {
+      status = "error";
+      lastError = (e && e.message ? e.message : String(e)).replace(/\.?$/, ".");
+    }
+    render();
+  }
+
+  /* ------------------------------------------------------------- theme */
+
+  var THEMES = ["auto", "light", "dark"];
+  function readTheme() {
+    try { var t = localStorage.getItem("jarvis-poke-theme"); return THEMES.indexOf(t) >= 0 ? t : "auto"; }
+    catch (e) { return "auto"; }
+  }
+  function applyTheme(t) {
+    document.documentElement.setAttribute("data-theme", t);
+    var btn = $("theme-btn");
+    clear(btn);
+    btn.appendChild(icon(t === "light" ? "sun" : t === "dark" ? "moon" : "auto"));
+    btn.setAttribute("aria-label", "Theme: " + (t === "auto" ? "follow system" : t) + ". Activate to change.");
+    btn.title = "Theme: " + (t === "auto" ? "follow system" : t);
+    try { localStorage.setItem("jarvis-poke-theme", t); } catch (e) { /* private mode: fine */ }
+  }
+
+  /* -------------------------------------------------------------- boot */
+
+  function wireHeader() {
+    var rb = $("refresh-btn");
+    rb.appendChild(icon("refresh"));
+    rb.addEventListener("click", function () {
+      if (MODE === "demo") { toast("Demo mode: there is nothing to refresh from."); return; }
+      load(true);
+    });
+
+    var theme = readTheme();
+    applyTheme(theme);
+    $("theme-btn").addEventListener("click", function () {
+      theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+      applyTheme(theme);
+    });
+
+    var editBtn = $("budget-edit-btn"), form = $("budget-edit"), input = $("budget-total"), hint = $("budget-hint");
+    function openEdit(open) {
+      form.setAttribute("data-open", String(open));
+      editBtn.setAttribute("aria-expanded", String(open));
+      if (open) {
+        var total = state && state.budget ? state.budget.total_cents : 0;
+        input.value = typeof total === "number" ? fmtCents(total).replace("$", "") : "";
+        hint.className = "hint"; hint.textContent = "Stored as integer cents.";
+        input.focus(); input.select();
+      }
+    }
+    editBtn.addEventListener("click", function () { openEdit(form.getAttribute("data-open") !== "true"); });
+    $("budget-cancel").addEventListener("click", function () { openEdit(false); editBtn.focus(); });
+    form.addEventListener("submit", async function (ev) {
+      ev.preventDefault();
+      var cents = parseCents(input.value);
+      if (cents === null || cents < 0) {
+        input.setAttribute("aria-invalid", "true");
+        hint.className = "hint bad"; hint.textContent = "Enter an amount like 600 or 600.00.";
+        return;
+      }
+      input.removeAttribute("aria-invalid");
+      hint.className = "hint"; hint.textContent = "Saving…";
+      try {
+        if (MODE === "live") {
+          await post("budget", { total_cents: cents });
+          openEdit(false);
+          await load(true);
+          toast("Budget set to " + fmtCents(cents) + ".");
+        } else {
+          var spent = (state.budget.spent_cents || 0) + (state.budget.reserved_cents || 0);
+          state.budget = Object.assign({}, state.budget, {
+            total_cents: cents, remaining_cents: Math.max(0, cents - spent)
+          });
+          openEdit(false);
+          render();
+          toast("Demo mode: the budget changed in this page only.");
+        }
+      } catch (e) {
+        hint.className = "hint bad";
+        hint.textContent = "Could not save: " + (e && e.message ? e.message : String(e));
+      }
+    });
+  }
+
+  function start() {
+    wireHeader();
+    /* The sticky bar swaps one single-line label for another when the
+       budget block scrolls out of sight. Nothing changes height, so the
+       swap cannot fight the scroll position. */
+    var top = $("top"), budget = document.querySelector("section.budget");
+    if (budget && typeof IntersectionObserver === "function") {
+      new IntersectionObserver(function (entries) {
+        top.setAttribute("data-compact", String(!entries[0].isIntersecting));
+      }, { threshold: 0 }).observe(budget);
+    }
+    load(false);
+    if (MODE === "live") {
+      setInterval(function () {
+        if (document.hidden) return;
+        load(false);
+      }, REFRESH_MS);
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) load(false);
+      });
+    }
+    /* A small handle for the host app: push a state object straight in
+       (useful when the app already holds it) or force a reload. */
+    window.jarvisPoke = {
+      mode: MODE,
+      reload: function () { return load(true); },
+      setState: function (s) {
+        if (!s || typeof s !== "object") throw new TypeError("setState expects the state object");
+        state = s; loadedAt = Date.now() / 1000; status = "ready"; lastError = ""; render();
+      }
+    };
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+})();
+</script>
+</body>
+</html>
