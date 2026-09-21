@@ -32,6 +32,18 @@ from jarvis_bots.app import AppError, SkipNote, build, build_supervisor, load_co
 
 T0 = 1_700_000_000.0
 
+try:                                    # the sibling package the poke bot needs
+    import jarvis_poke                  # noqa: F401
+    HAVE_POKE = True
+except ImportError:                     # pragma: no cover - layout-dependent
+    HAVE_POKE = False
+
+#: The handoff directories ship jarvis_bots and jarvis_poke apart, so the
+#: Pokemon builder -- the only one that reaches into a sibling package --
+#: cannot run from inside jarvis-bots/ alone.  Skipping is honest; the
+#: tests below still run in the tree where both are importable.
+needs_poke = pytest.mark.skipif(not HAVE_POKE, reason="jarvis_poke not on the path")
+
 
 def clock() -> float:
     return T0
@@ -148,12 +160,14 @@ def test_a_config_error_message_never_reaches_the_page_verbatim():
 # --------------------------------------------------------------------------
 
 
+@needs_poke
 def test_poke_without_a_fetcher_says_the_package_ships_no_parser():
     result = build(cfg(poke={"enabled": True, "db": ":memory:"}), clock=clock)
     reason = note_for(result, "poke").reason
     assert "ships no" in reason and "parser" in reason
 
 
+@needs_poke
 def test_poke_without_a_db_says_a_restart_would_re_alert():
     result = build(cfg(poke={"enabled": True, "fetcher": PROBE, "parser": PROBE}),
                    clock=clock)
@@ -171,12 +185,14 @@ def _poke_config(**over: Any) -> Dict[str, Any]:
     return cfg(poke=block)
 
 
+@needs_poke
 def test_poke_builds_with_the_packages_own_placeholder_catalog():
     result = build(_poke_config(), clock=clock)
     assert [b.info.id for b in result.bots] == ["poke"]
     assert result.bots[0]._snipe is None, "no windows configured, no controller"
 
 
+@needs_poke
 def test_drop_windows_in_config_produce_a_live_snipe_controller():
     result = build(_poke_config(windows=[{
         "name": "restock", "source": "examplemart",
@@ -188,6 +204,7 @@ def test_drop_windows_in_config_produce_a_live_snipe_controller():
     assert bot._snipe.active_window("examplemart", T0 + 3700.0).name == "restock"
 
 
+@needs_poke
 def test_a_recurring_window_expands_from_config():
     result = build(_poke_config(windows=[{
         "name": "weekly", "source": "examplemart",
@@ -199,6 +216,7 @@ def test_a_recurring_window_expands_from_config():
     assert plan.windows[0].name == "weekly-2026-04-06"
 
 
+@needs_poke
 def test_a_window_under_the_poll_floor_is_refused_not_quietly_raised():
     result = build(_poke_config(windows=[{
         "name": "toofast", "source": "examplemart",
@@ -208,6 +226,7 @@ def test_a_window_under_the_poll_floor_is_refused_not_quietly_raised():
     assert note_for(result, "poke").reason
 
 
+@needs_poke
 def test_a_window_for_a_source_the_catalog_has_never_heard_of_is_refused():
     result = build(_poke_config(windows=[{
         "name": "ghost", "source": "nosuchshop",
@@ -232,6 +251,7 @@ def test_build_supervisor_runs_a_round_over_what_it_built():
     assert report.failed == 0
 
 
+@needs_poke
 def test_every_bot_gets_the_same_clock():
     # jarvis_poke refuses collaborators on a different clock, and a
     # snapshot taken by two clocks is two different moments.
@@ -337,3 +357,96 @@ def test_the_example_config_points_at_no_real_retailer():
             f"the shipped example names {host}; the placeholder shops are "
             f"there so nobody's selectors end up in this repository"
         )
+
+
+# --------------------------------------------------------------------------
+# composing with a wiring the app already has
+# --------------------------------------------------------------------------
+#
+# BotRegistry.register refuses a duplicate id on purpose, so an app that
+# wired some bots by hand could not also call build() without crashing --
+# which made two wirings an either/or. These say they compose.
+
+
+from jarvis_bots.registry import BotRegistry, RegistryError  # noqa: E402
+
+
+def _built(bot_id: str):
+    result = build(cfg(**{bot_id: {"enabled": True, "probe": PROBE,
+                                   "mountpoints": ["/tmp"],
+                                   "services": ["ssh.service"]}}), clock=clock)
+    assert result.bots, [n.reason for n in result.skipped]
+    return result.bots[0]
+
+
+def test_a_bot_the_app_already_wired_is_left_alone_not_rebuilt():
+    mine = BotRegistry([_built("gpu")])
+    result = build(cfg(
+        gpu={"enabled": True, "probe": PROBE},
+        disk={"enabled": True, "probe": PROBE, "mountpoints": ["/tmp"]},
+    ), clock=clock, existing=mine)
+    assert [b.info.id for b in result.bots] == ["disk"]
+    assert "already wired elsewhere" in note_for(result, "gpu").reason
+
+
+def test_build_supervisor_registers_alongside_an_existing_registry():
+    existing = BotRegistry([_built("gpu")])
+    supervisor, result = build_supervisor(cfg(
+        gpu={"enabled": True, "probe": PROBE},
+        disk={"enabled": True, "probe": PROBE, "mountpoints": ["/tmp"]},
+    ), clock=clock, registry=existing)
+    assert sorted(existing.ids()) == ["disk", "gpu"]
+    report = supervisor.run_round(T0)
+    assert report.ticked == 2 and report.failed == 0
+    # The hand-wired one is the *same object*, not a rebuild: its health
+    # record and snapshot stay attached to it.
+    assert existing.get("gpu") is not result.bots[0]
+
+
+def test_composing_never_raises_the_duplicate_id_error():
+    # Without the skip this is exactly the crash: register() refuses a
+    # duplicate id, so a second wiring would take the whole app down.
+    existing = BotRegistry([_built("gpu")])
+    with pytest.raises(RegistryError, match="duplicate"):
+        existing.register(_built("gpu"))          # the failure being avoided
+    supervisor, result = build_supervisor(
+        cfg(gpu={"enabled": True, "probe": PROBE}), clock=clock, registry=existing)
+    assert [b.info.id for b in result.bots] == []
+    assert sorted(existing.ids()) == ["gpu"]
+
+
+def test_existing_accepts_a_plain_list_of_ids():
+    result = build(cfg(gpu={"enabled": True, "probe": PROBE}),
+                   clock=clock, existing=["gpu"])
+    assert not result.bots
+    assert "already wired elsewhere" in note_for(result, "gpu").reason
+
+
+@pytest.mark.parametrize("bad", ["gpu", 42])
+def test_existing_refuses_something_it_cannot_read_as_ids(bad):
+    with pytest.raises(AppError, match="existing"):
+        build(cfg(), clock=clock, existing=bad)
+
+
+def test_no_existing_is_the_single_wiring_case_unchanged():
+    result = build(cfg(gpu={"enabled": True, "probe": PROBE}), clock=clock)
+    assert [b.info.id for b in result.bots] == ["gpu"]
+
+
+def test_a_missing_sibling_package_is_named_not_reduced_to_an_exception_type(
+    monkeypatch,
+):
+    # Runs in either layout: a None in sys.modules makes the import raise
+    # ImportError even where jarvis_poke is installed, so the branch is
+    # covered in the tree where it cannot occur naturally.
+    for name in ("jarvis_poke", "jarvis_poke.catalog", "jarvis_poke.engine",
+                 "jarvis_poke.prices", "jarvis_poke.rules", "jarvis_poke.sources",
+                 "jarvis_poke.store"):
+        monkeypatch.setitem(sys.modules, name, None)
+    result = build(cfg(poke={"enabled": True, "db": ":memory:",
+                             "fetcher": PROBE, "parser": PROBE}), clock=clock)
+    note = note_for(result, "poke")
+    assert "jarvis_poke" in note.reason and "on the path" in note.reason
+    assert "ModuleNotFoundError" not in note.reason, (
+        "an exception type name tells an owner nothing about what to install"
+    )

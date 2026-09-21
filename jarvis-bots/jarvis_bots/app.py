@@ -274,13 +274,23 @@ def _build_poke(block: Mapping[str, Any], clock: Callable[[], float]) -> Bot:
     is nothing to build, and saying so is more use than a bot that watches
     a placeholder.
     """
-    from jarvis_poke.catalog import Catalog
-    from jarvis_poke.engine import DecisionEngine
-    from jarvis_poke.prices import PriceHistory
-    from jarvis_poke.rules import RuleSet
-    from jarvis_poke.sources import PollScheduler, load_policies
-    from jarvis_poke.store import PokeStore
-    from jarvis_bots.bots import poke_bot
+    try:
+        from jarvis_poke.catalog import Catalog
+        from jarvis_poke.engine import DecisionEngine
+        from jarvis_poke.prices import PriceHistory
+        from jarvis_poke.rules import RuleSet
+        from jarvis_poke.sources import PollScheduler, load_policies
+        from jarvis_poke.store import PokeStore
+        from jarvis_bots.bots import poke_bot
+    except ImportError as exc:
+        # This is the one builder that reaches into a sibling package, and
+        # the handoff directories ship them apart.  "could not be built
+        # (ModuleNotFoundError)" tells an owner nothing; naming the package
+        # tells them what to put on the path.
+        raise AppError(
+            f"jarvis_poke is not importable from here ({exc.name or exc}); the "
+            f"Pokemon assistant needs it on the path alongside jarvis_bots"
+        ) from None
 
     fetcher_spec, parser_spec = block.get("fetcher"), block.get("parser")
     if not fetcher_spec or not parser_spec:
@@ -366,13 +376,48 @@ BUILDERS: Dict[str, Callable[[Mapping[str, Any], Callable[[], float]], Bot]] = {
 # --------------------------------------------------------------------------
 
 
+def _taken(existing: Any) -> frozenset:
+    """The bot ids some other wiring has already claimed.
+
+    Accepts a :class:`~jarvis_bots.registry.BotRegistry`, anything with
+    ``ids()``, or a plain iterable of ids, because the caller that needs
+    this is an app that wired some bots by hand before it found this file.
+    """
+    if existing is None:
+        return frozenset()
+    ids = getattr(existing, "ids", None)
+    if callable(ids):
+        return frozenset(str(i) for i in ids())
+    if isinstance(existing, BotRegistry):  # pragma: no cover - ids() covers it
+        return frozenset(bot.info.id for bot in existing.all())
+    if isinstance(existing, str):
+        raise AppError("existing must be a registry or an iterable of ids, not a string")
+    try:
+        return frozenset(str(i) for i in existing)
+    except TypeError:
+        raise AppError(
+            f"existing must be a registry or an iterable of bot ids; got "
+            f"{type(existing).__name__}"
+        ) from None
+
+
 def build(config: Mapping[str, Any], *,
-          clock: Optional[Callable[[], float]] = None) -> BuildResult:
+          clock: Optional[Callable[[], float]] = None,
+          existing: Any = None) -> BuildResult:
     """Build every bot the config asks for; note every one it does not.
 
     One bot that cannot be built never stops the others: a machine with no
     GPU should still get its disk watched.  The failure is recorded as a
     :class:`SkipNote` and shown on the page.
+
+    ``existing`` is for the app that already wired some bots by hand --
+    a registry, or just the ids it has taken.  Those are skipped rather
+    than rebuilt, because ``BotRegistry.register`` refuses a duplicate id
+    on purpose: "two bots under one id would share one health record, one
+    snapshot and one set of attention items".  This is what lets a
+    hand-wired Pokemon bot with real retailer adapters keep its place
+    while this file adds the machine watches around it, instead of the
+    two wirings being an either/or.
 
     ``clock`` defaults to :func:`time.time`, the one wall clock in the
     package, and is shared by every bot and the supervisor so that
@@ -381,10 +426,19 @@ def build(config: Mapping[str, Any], *,
     """
     if not isinstance(config, Mapping):
         raise AppError(f"config must be a mapping, got {type(config).__name__}")
+    taken = _taken(existing)
     tick = clock if clock is not None else time.time
     bots: List[Bot] = []
     skipped: List[SkipNote] = []
     for bot_id, builder in BUILDERS.items():
+        if bot_id in taken:
+            skipped.append(SkipNote(
+                bot_id,
+                "already wired elsewhere in this app; left alone rather than "
+                "registered twice",
+                fixable=True,
+            ))
+            continue
         block = _section(config, bot_id)
         if block is None:
             skipped.append(SkipNote(bot_id, "not configured", fixable=True))
@@ -405,16 +459,30 @@ def build(config: Mapping[str, Any], *,
 
 def build_supervisor(config: Mapping[str, Any], *,
                      clock: Optional[Callable[[], float]] = None,
-                     store: Any = None, alerts: Any = None) -> Tuple[Supervisor, BuildResult]:
+                     store: Any = None, alerts: Any = None,
+                     registry: Optional[BotRegistry] = None
+                     ) -> Tuple[Supervisor, BuildResult]:
     """:func:`build`, plus the supervisor that runs the result.
+
+    Pass ``registry`` to add to a registry the app already populated: the
+    bots it holds are left alone (see ``existing`` on :func:`build`) and
+    the new ones are registered alongside them.  Without it a fresh
+    registry is made, which is the single-wiring case.
 
     ``store`` and ``alerts`` stay the caller's: persistence and delivery
     are the app's seams and this file has no business choosing a file path
     or a push transport.
     """
-    result = build(config, clock=clock)
+    if registry is None:
+        result = build(config, clock=clock)
+        target = result.registry
+    else:
+        result = build(config, clock=clock, existing=registry)
+        target = registry
+        for bot in result.bots:
+            target.register(bot)
     tick = clock if clock is not None else time.time
-    supervisor = Supervisor(result.registry, tick, store=store, alerts=alerts)
+    supervisor = Supervisor(target, tick, store=store, alerts=alerts)
     return supervisor, result
 
 
