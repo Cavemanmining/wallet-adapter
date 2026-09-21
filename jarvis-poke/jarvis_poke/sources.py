@@ -774,6 +774,59 @@ class PollScheduler:
         state.pause_by_host = False
         self._save()
 
+    def retime_source(self, source: str, now: float) -> int:
+        """Re-derive one source's next-due times from its *current* policy.
+
+        ``set_policy`` replaces the interval, but every gate already on the
+        books was computed at the last poll under the *old* one.  Tighten a
+        policy from 300s to 30s at 11:59 and nothing happens until the 300s
+        already ticking runs out -- the drop is over by then.  Relax it and
+        the host keeps being polled at the old fast rate until each gate
+        expires.  This makes the change take effect now, in both
+        directions: each gate becomes ``last_attempt_at + min_interval_s``,
+        which is what the gate would have been had the policy been in force
+        at the last attempt.  Returns how many gates moved.
+
+        What it deliberately does not touch:
+
+        * **Pauses.**  ``paused_until`` is a separate field and
+          :meth:`effective_due_at` takes the later of the two, so a host
+          that asked for a day with ``Retry-After`` still gets its day.
+          A window that tightens polling can never shorten a pause; that
+          is the whole reason the pause was kept out of ``next_due_at``.
+        * **The floor.**  The new gate is derived from the policy, and
+          :class:`~jarvis_poke.contracts.FetchPolicy` refuses an interval
+          under 30s at construction, so there is no arithmetic here that
+          can produce a faster poll than the floor allows.
+        * **A listing never polled.**  ``last_attempt_at == 0`` means we
+          have never fetched it; its gate is already open and moving it to
+          ``0 + interval`` would be a delay invented out of nothing.
+
+        The jitter from the last poll is dropped, because it was a fraction
+        of the old interval.  The next poll draws a fresh one.
+        """
+        policy = self.policy(source)
+        if not math.isfinite(float(now)):
+            raise SchedulerError(f"cannot retime {source!r} at a non-finite now: {now!r}")
+        moved = 0
+        with self._guard():
+            state = self._sources.get(source)
+            if state is not None and state.last_attempt_at > 0.0:
+                target = state.last_attempt_at + policy.min_interval_s
+                if target != state.next_due_at:
+                    state.next_due_at = target
+                    moved += 1
+            for (src_name, _product), sku_state in self._skus.items():
+                if src_name != source or sku_state.last_attempt_at <= 0.0:
+                    continue
+                target = sku_state.last_attempt_at + policy.min_interval_s
+                if target != sku_state.next_due_at:
+                    sku_state.next_due_at = target
+                    moved += 1
+            if moved:
+                self._save()
+        return moved
+
     # -- polling -----------------------------------------------------------
 
     @contextmanager

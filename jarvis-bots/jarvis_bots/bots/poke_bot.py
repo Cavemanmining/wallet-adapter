@@ -115,8 +115,11 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
+from dataclasses import replace as _replace
+
 from jarvis_bots.base import BaseBot, Clock
 from jarvis_bots.contracts import BotInfo, BotState, BotStatus, Event, Severity
+from jarvis_poke.snipe import EventKind as SnipeEventKind
 from jarvis_poke.contracts import (
     Action,
     FetchResult,
@@ -175,6 +178,12 @@ DEFAULT_OBSERVATION_TTL_S = 3600.0
 #: a URL or a page"; a fetcher's own ``reason`` string deserves the same
 #: suspicion, since this bot did not write it.
 MAX_REASON_CHARS = 60
+
+#: The framework's tick floor (``BotInfo`` raises below 5s).  A window
+#: interval can never be under 30s, so this is belt and braces -- but it is
+#: the framework's number, not a second copy of it, because a bot that
+#: proposed a 1s interval would be ticked as fast as the scheduler runs.
+_MIN_TICK_S = 5.0
 
 
 class PokeBotError(ValueError):
@@ -314,6 +323,7 @@ class PokeBot(BaseBot):
         *,
         info: Optional[BotInfo] = None,
         observation_ttl_s: float = DEFAULT_OBSERVATION_TTL_S,
+        snipe: Any = None,
     ) -> None:
         super().__init__(clock, info)
 
@@ -358,6 +368,26 @@ class PokeBot(BaseBot):
         #: Events this tick reported resolved, for :meth:`drain_resolved`.
         self._resolved: List[Event] = []
 
+        #: Optional :class:`jarvis_poke.snipe.SnipeController`.  Without
+        #: one this bot behaves exactly as before; with one it watches
+        #: harder inside a drop window.  Duck-typed rather than imported
+        #: as a type, so a test can pass a double and the framework keeps
+        #: its one-way dependency on jarvis_poke.
+        if snipe is not None:
+            for method in ("sync", "active_window"):
+                if not callable(getattr(snipe, method, None)):
+                    raise PokeBotError(
+                        f"snipe has no {method}(); expected a "
+                        f"jarvis_poke.snipe.SnipeController"
+                    )
+        self._snipe = snipe
+        #: The tick interval to go back to when a window closes.  Captured
+        #: from ``info`` rather than from :data:`INFO`, so a bot given a
+        #: custom interval keeps it.
+        self._base_interval_s = float(self.info.interval_s)
+        #: The name of the window whose tick rate is installed, or "".
+        self._tick_window = ""
+
         self._ticks = 0
         self._polls = 0
         self._poll_failures = 0
@@ -390,6 +420,8 @@ class PokeBot(BaseBot):
         self._ticks += 1
         self._last_tick_at = now
 
+        events.extend(self._sync_snipe(now))
+
         due = list(self._scheduler.due(now))
         for sku in due:
             events.extend(self._poll(sku, now))
@@ -399,6 +431,131 @@ class PokeBot(BaseBot):
 
         events.extend(self._source_health(now))
         return tuple(events)
+
+    # -- drop windows --------------------------------------------------------
+
+    def _sync_snipe(self, now: float) -> List[Event]:
+        """Let the snipe controller open and close windows, and follow it.
+
+        Two rates move, and they are not the same rate:
+
+        * the **poll** rate, which the controller sets on the scheduler and
+          which the scheduler's own 30s floor governs;
+        * this bot's **tick** rate, which decides how often anything is
+          even asked.  Tightening the first without the second buys
+          nothing: a scheduler willing to poll every 30s that is asked
+          once every 300s still polls every 300s.
+
+        So the tick rate follows the window too, and it follows it from
+        *arm* time rather than open time.  The supervisor reads
+        ``bot.info`` before the tick and computes the next due time from
+        that copy, so a tighten during the tick lands one round late --
+        which, at a 300s round, is the whole first five minutes of the
+        drop.  Arming ten minutes early costs a handful of extra ticks
+        against a scheduler that is still refusing to poll, and buys a bot
+        that is already awake when the window opens.
+
+        A controller that raises is not allowed to stop the round: the
+        polling below is the bot's actual job and works without any of
+        this.  The failure comes back as an event.
+        """
+        if self._snipe is None:
+            return []
+        events: List[Event] = []
+        try:
+            for change in self._snipe.sync(now):
+                events.append(self._snipe_event(change, now))
+        except Exception as exc:  # noqa: BLE001 - see the docstring
+            return [
+                Event(
+                    at=now,
+                    bot_id=self.info.id,
+                    severity=Severity.ERROR,
+                    text=(
+                        f"drop-window controller failed ({type(exc).__name__}); "
+                        f"watching at the normal rate"
+                    ),
+                )
+            ]
+        events.extend(self._follow_tick_rate(now))
+        return events
+
+    def _snipe_event(self, change: Any, now: float) -> Event:
+        """One controller event as a framework event.
+
+        Only ``NOT_READY`` carries an attention key: it is the one the
+        owner has to act on, and it has to survive in the badge until they
+        do.  Opening and closing a window is bookkeeping -- worth a feed
+        line, not a badge item -- and a badge that fills up with "window
+        opened" is a badge nobody reads on the day it matters.
+        """
+        kind = getattr(change, "kind", None)
+        detail = _safe_reason(getattr(change, "detail", ""))
+        if kind is SnipeEventKind.NOT_READY:
+            return Event(
+                at=now,
+                bot_id=self.info.id,
+                severity=Severity.ACTION,
+                text=f"Drop window not ready: {detail}",
+                attention_key=f"snipe:not-ready:{change.window}",
+                href=self.info.href,
+            )
+        if kind is SnipeEventKind.ARMED:
+            # The same key, resolved: an owner who fixed the push
+            # subscription after the first warning gets the badge back.
+            return Event(
+                at=now,
+                bot_id=self.info.id,
+                severity=Severity.NOTICE,
+                text=f"Drop window armed: {detail}",
+                attention_key=f"snipe:not-ready:{change.window}",
+                data={"resolved": True},
+            )
+        severity = Severity.NOTICE if kind is SnipeEventKind.OPENED else Severity.INFO
+        return Event(at=now, bot_id=self.info.id, severity=severity, text=detail)
+
+    def _follow_tick_rate(self, now: float) -> List[Event]:
+        """Match this bot's own tick interval to the window in force."""
+        window = self._next_window(now)
+        wanted_name = window.name if window is not None else ""
+        if wanted_name == self._tick_window:
+            return []
+        if window is not None:
+            interval = max(_MIN_TICK_S, float(window.interval_s))
+        else:
+            interval = self._base_interval_s
+        try:
+            self.info = _replace(self.info, interval_s=interval)
+        except ValueError:
+            return []
+        self._tick_window = wanted_name
+        return [
+            Event(
+                at=now,
+                bot_id=self.info.id,
+                severity=Severity.INFO,
+                text=(
+                    f"checking every {interval:.0f}s for {wanted_name}"
+                    if wanted_name else
+                    f"back to checking every {interval:.0f}s"
+                ),
+            )
+        ]
+
+    def _next_window(self, now: float) -> Any:
+        """The window this bot should already be awake for: one that is
+        open, or one that is arming.  Asks the controller's plan across
+        every source it knows, because a bot ticks for all of them."""
+        plan = getattr(self._snipe, "plan", None)
+        if plan is None:
+            return None
+        candidates = [
+            w for w in plan.windows
+            if w.arms_at <= now < w.closes_at
+        ]
+        if not candidates:
+            return None
+        return min(candidates, key=lambda w: (w.interval_s, w.name))
 
     # -- polling -----------------------------------------------------------
 

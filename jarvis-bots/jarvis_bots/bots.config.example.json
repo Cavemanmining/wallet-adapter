@@ -1,0 +1,102 @@
+{
+  "_comment": [
+    "Copy this next to your Jarvis backend, edit it, and hand it to",
+    "jarvis_bots.app.build_supervisor. Dry-run it first with:",
+    "  python3 -m jarvis_bots.app bots.config.json",
+    "which prints what it would build and, for everything it would not,",
+    "the reason in words. Nothing here is a default: a bot with no",
+    "section is not built, because a disk watch pointed at a guess is",
+    "worse than no disk watch."
+  ],
+
+  "bots": {
+    "gpu": {
+      "enabled": true,
+      "_comment": [
+        "Compares each card's PCIe link against the best ever seen for",
+        "that uuid, not against its theoretical maximum -- so a 170HX",
+        "sitting at Gen 2 x4 never alerts, and a card that *drops* from",
+        "its own best does."
+      ],
+      "temp_action_c": 85,
+      "temp_notice_c": 80
+    },
+
+    "services": {
+      "enabled": true,
+      "_comment": [
+        "Crash-loop detection fires even while systemd reports 'active',",
+        "which is exactly the case a plain up/down check misses: a unit",
+        "restarting every few seconds is active every time you look."
+      ],
+      "services": ["comfyui.service", "ollama.service", "jarvis.service"],
+      "restart_threshold": 3,
+      "window_s": 600
+    },
+
+    "disk": {
+      "enabled": true,
+      "_comment": [
+        "Two separate questions, two separate badge items: 'this is",
+        "nearly full now' and 'at this rate it fills on Thursday'."
+      ],
+      "mountpoints": ["/", "/scratch"],
+      "percent_threshold": 90,
+      "projected_days_threshold": 3
+    },
+
+    "health": {
+      "enabled": true,
+      "_comment": [
+        "The asset check is the one that catches a hosting rewrite",
+        "returning 200 and index.html for a bundle that is not there --",
+        "which looks perfectly healthy to a status-code check."
+      ],
+      "checks": [
+        {"name": "frontend", "url": "https://YOUR-PROJECT.web.app/",
+         "kind": "frontend", "critical": true},
+        {"name": "api", "url": "http://192.168.115.231:8000/health",
+         "kind": "backend", "critical": true},
+        {"name": "bundle", "url": "https://YOUR-PROJECT.web.app/assets/index.js",
+         "kind": "asset"},
+        {"name": "version", "url": "https://YOUR-PROJECT.web.app/version.json",
+         "kind": "version"}
+      ],
+      "pairs": {"frontend": "api"}
+    },
+
+    "poke": {
+      "enabled": false,
+      "_comment": [
+        "Off by default, and it stays off until you point 'fetcher' and",
+        "'parser' at your own code: this package ships no retailer's page",
+        "parser on purpose. The catalog that does ship names placeholder",
+        "shops at example.com, so the bot runs end to end without ever",
+        "touching a real site.",
+        "",
+        "'windows' is the sniping half. Inside a window the poll interval",
+        "tightens to 'interval_s' (never under 30s -- that floor is in the",
+        "code, not here) and the bot's own tick rate follows it from ten",
+        "minutes before the window opens. That pre-arm is also when the",
+        "preflight runs: it checks there is a live push subscription, that",
+        "the source is not paused, that a rule can actually fire and that",
+        "the budget can afford it -- while there is still time to fix any",
+        "of them. A window where those are wrong raises an ACTION with the",
+        "reason, ten minutes early, instead of failing silently at 11:00.",
+        "",
+        "It still does not check out. The alert carries a deep link to the",
+        "listing; you tap it and buy."
+      ],
+      "db": "/var/lib/jarvis/poke.db",
+      "fetcher": "your_app.retail:fetch",
+      "parser": "your_app.retail:parse",
+      "windows": [
+        {"name": "friday-restock", "source": "examplemart",
+         "first_day": "2026-09-25", "at_utc": "15:00",
+         "duration_s": 1800, "days": 8, "interval_s": 30},
+        {"name": "set-release", "source": "cardbarn",
+         "opens_at": 1790000000, "closes_at": 1790003600, "interval_s": 30}
+      ]
+    }
+  }
+}

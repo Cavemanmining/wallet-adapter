@@ -162,6 +162,7 @@ class Rig:
         rules: Sequence[Rule],
         budget: Budget = Budget(total=1_000_00),
         observation_ttl_s: float = DEFAULT_OBSERVATION_TTL_S,
+        snipe: Any = None,
     ) -> None:
         self.clock = Clock()
         self.shop = Shop()
@@ -198,6 +199,7 @@ class Rig:
             self.shop.parse,
             self.clock,
             observation_ttl_s=observation_ttl_s,
+            snipe=snipe(self.scheduler) if callable(snipe) else snipe,
         )
         self.supervisor = Supervisor(BotRegistry([self.bot]), self.clock)
 

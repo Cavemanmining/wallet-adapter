@@ -165,17 +165,23 @@ def alert_data(verdict: Verdict) -> Dict[str, Any]:
     return data
 
 
-def _check_payload(data: Dict[str, Any]) -> None:
+def _check_payload(data: Dict[str, Any], keys: Any = None) -> None:
     """Refuse anything that is not a flat JSON scalar.
 
     A nested object in an alert's ``data`` is how a subscription blob, a
     token or a whole config ends up in a notification.  This module builds
     the payload itself, so the check can only ever fail on a future edit --
     which is the point of having it.
+
+    ``keys`` is the allowlist the payload must match exactly, defaulting to
+    :data:`DATA_KEYS`.  :mod:`jarvis_poke.snipe` passes its own superset:
+    the allowlist is per-payload-shape, but the scalar rule below is not
+    negotiable and is the same for every caller.
     """
-    if set(data) != set(DATA_KEYS):
+    allowed = DATA_KEYS if keys is None else tuple(keys)
+    if set(data) != set(allowed):
         raise BridgeError(
-            f"alert data must carry exactly {sorted(DATA_KEYS)}; got {sorted(data)}"
+            f"alert data must carry exactly {sorted(allowed)}; got {sorted(data)}"
         )
     for key, value in data.items():
         if value is None or isinstance(value, str):
@@ -316,15 +322,32 @@ class AlertBridge:
         alert_id = self.service.publish(
             self.profile_id,
             self.kind,
-            _title(product, verdict),
-            _body(verdict),
-            data=alert_data(verdict),
+            self.alert_title(product, verdict),
+            self.alert_body(verdict),
+            data=self.build_data(verdict),
             priority=Priority.HIGH,
             dedupe_key=key,
         )
         self._recent[key] = (now, alert_id)
         self.published += 1
         return alert_id
+
+    # -- what the notification says (overridable) --------------------------
+    #
+    # Three seams, so a subclass can change the words and the payload
+    # without re-implementing the dedupe bookkeeping above --
+    # :class:`jarvis_poke.snipe.SnipeAlertBridge` is that subclass.  The
+    # defaults are the module-level functions, which stay the reference
+    # behaviour and stay tested on their own.
+
+    def alert_title(self, product: Product, verdict: Verdict) -> str:
+        return _title(product, verdict)
+
+    def alert_body(self, verdict: Verdict) -> str:
+        return _body(verdict)
+
+    def build_data(self, verdict: Verdict) -> Dict[str, Any]:
+        return alert_data(verdict)
 
     # -- internals ----------------------------------------------------------
 

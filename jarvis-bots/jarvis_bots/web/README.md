@@ -175,11 +175,68 @@ against, so a phone with a wrong clock still reads correctly.
 - **State is never carried by colour alone.** Each pill spells out the word,
   and the button's accessible name includes the count and the condition.
 
+## What ships, and what each bot is for
+
+`python3 -m jarvis_bots.app your-config.json` is a dry run: it prints what
+that config would build and, for every bot it would not, the reason in a
+sentence. `jarvis_bots/bots.config.example.json` is a filled-in starting
+point. A bot with no section is not built and says so on the page — that
+is why the launcher can be empty, and why an empty launcher now tells you
+what to add instead of just looking broken.
+
+| Bot | What it is actually watching |
+| --- | --- |
+| `gpu` | Each card against the fleet you had last time. A card that vanished is the headline. PCIe links are compared against the best ever seen **for that uuid**, not the theoretical maximum, so a 170HX at Gen 2 x4 never nags. |
+| `services` | Crash loops, keyed so they fire **while systemd still says `active`** — a unit restarting every few seconds is active every time you look, which is how ~15,000 restarts go unnoticed. |
+| `disk` | Two separate questions and two separate badge items: "this is nearly full" and "at this rate it fills on Thursday". A large delete resets the trend rather than projecting a nonsense date. |
+| `health` | Version drift after a deploy, a frontend that is up while its backend is not, and the asset check that catches a hosting rewrite serving `index.html` with a **200** for a bundle that is not there. |
+| `poke` | Sealed product stock and prices against your rules. Off until you point `fetcher` and `parser` at your own code. |
+
+## Drop windows (the sniping half)
+
+A window is a stretch of time worth watching one source harder — a set
+release, a known restock hour. Inside it the poll interval tightens and
+the bot's own tick rate follows, so the average wait between a listing
+going live and you hearing about it drops from half the normal interval to
+about fifteen seconds.
+
+Three rails are in the code, not in this document:
+
+- **A 30 second floor.** A window interval is validated by the same
+  `FetchPolicy` the rest of the package uses, which refuses anything
+  faster. The tightest a window can be is the politest thing the tool
+  would ever have done anyway.
+- **Bounded.** Two hours per window, six hours per source per day counted
+  as a union so overlapping windows cannot be stacked into a permanent
+  fast poll. "Snipe all day" is refused at config time.
+- **A pause outranks a window.** If a host sent `Retry-After`, that waits,
+  window or no window.
+
+The part that matters more than the polling: a window **arms** ten minutes
+before it opens and runs a preflight — is there a live push subscription,
+is the source paused, can any rule actually fire, does the budget cover
+it. Any of those wrong raises an ACTION *ten minutes early*, while you can
+still fix it. The commonest way a snipe is missed is not a slow poll; it
+is an expired push endpoint nobody noticed.
+
 ## The boundary, stated in the page itself
 
-These bots watch and decide. They do not buy. When something clears your
-rules you get an alert linking to the seller's own page and you complete the
-purchase there. There is no cart action anywhere in this UI, and that is on
-purpose: automated checkout breaks retailer terms and is what gets accounts
-banned and orders cancelled. The slow part of catching a restock is finding
-out, and that is fully automated.
+These bots watch and decide, and the alert links to the seller's own page
+for you to complete. That is what is built today.
+
+To be precise about where the line actually is, because it is narrower
+than "no automation": automating a checkout on **your own account with
+your own saved payment details**, at the rate a person could click, is a
+convenience. What is out of bounds is everything that exists to defeat a
+retailer's controls — solving or bypassing CAPTCHAs, rotating proxies to
+look like many people, creating or cycling accounts, spoofing bot
+detection, or polling faster than the floor above. None of that is in this
+repository and none of it is planned.
+
+The checkout layer itself is designed and its contracts are written
+(`jarvis_buy/contracts.py`: a dry-run-by-default arm state, per-item and
+per-day spend limits, an idempotency key derived from the authorisation,
+and a rule that an unreconciled order blocks everything). The
+implementation is not built here. The rest — noticing, deciding, and
+getting it onto your phone with the app closed — is, and that is the slow
+part.
