@@ -44,6 +44,8 @@ import pytest
 
 from lucifer_gen.seed import SeedFields
 
+import jarvis_bots.bots
+import jarvis_bots.bots.poke_bot
 from jarvis_bots.bots.poke_bot import (
     DEFAULT_OBSERVATION_TTL_S,
     INFO,
@@ -74,7 +76,7 @@ from jarvis_poke.prices import PriceHistory
 from jarvis_poke.rules import RuleSet
 from jarvis_poke.sources import PollScheduler
 
-MODULE = ROOT / "jarvis_bots" / "bots" / "poke_bot.py"
+MODULE = Path(jarvis_bots.bots.poke_bot.__file__)
 
 T0 = 1_700_000_000.0
 ETB = "sv08-surging-sparks-etb"
@@ -894,7 +896,7 @@ def test_nothing_here_reads_a_clock_or_opens_a_socket() -> None:
 def test_the_bots_package_imports_nothing_by_itself() -> None:
     """``jarvis_bots.registry``: "explicit registration only ... no import
     of every module in a package"."""
-    init = (ROOT / "jarvis_bots" / "bots" / "__init__.py").read_text(encoding="utf-8")
+    init = Path(jarvis_bots.bots.__file__).read_text(encoding="utf-8")
     tree = ast.parse(init)
     assert not [n for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))
                 and getattr(n, "module", "") != "__future__"]
